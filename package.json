@@ -1,7 +1,7 @@
 {
-	"name": "@alessiofrittoli/node-module-starter",
-	"version": "0.4.0",
-	"description": "Basic Node Module repository",
+	"name": "@alessiofrittoli/next-api",
+	"version": "0.1.0",
+	"description": "Next.js API utility library",
 	"author": {
 		"name": "Alessio Frittoli",
 		"email": "info@alessiofrittoli.it",
@@ -9,18 +9,18 @@
 	},
 	"license": "MIT",
 	"keywords": [
-		"nodejs",
-		"npm",
-		"node_modules"
+		"next",
+		"next.js",
+		"next-server"
 	],
-	"homepage": "https://github.com/alessiofrittoli/node-module-starter#readme",
+	"homepage": "https://github.com/alessiofrittoli/next-api#readme",
 	"bugs": {
-		"url": "https://github.com/alessiofrittoli/node-module-starter/issues",
+		"url": "https://github.com/alessiofrittoli/next-api/issues",
 		"email": "info@alessiofrittoli.it"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/alessiofrittoli/node-module-starter.git"
+		"url": "git+https://github.com/alessiofrittoli/next-api.git"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
