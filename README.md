@@ -1,8 +1,8 @@
-# Node Module Starter 🛠️
+# Next.js API utilities △
 
-Version 0.2.0
+Version 0.1.0
 
-## Starter repository for developing node_modules
+## Next.js API utility library
 
 ### Table of Contents
 
@@ -16,36 +16,18 @@ Version 0.2.0
 
 ---
 
-### Getting started (delete once cloned in your project)
+### Getting started
 
-Run the following command to start using `node-module-starter` for your projects:
-
-```bash
-git clone git@github.com:alessiofrittoli/node-module-starter.git && git remote remove origin
-```
-
-install dependencies
+Run the following command to start using `next-api` in your projects:
 
 ```bash
-pnpm i
-```
-
-Read the [Creating a repository from a template - GitHub Docs](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) for more in-detail informations about creating a new Repository from a template using GitHub web interface.
-
----
-
-### Getting started (customize based on your project needs)
-
-Run the following command to start using `{package_name}` in your projects:
-
-```bash
-npm i {package_name}
+npm i @alessiofrittoli/next-api
 ```
 
 or using `pnpm`
 
 ```bash
-pnpm i {package_name}
+pnpm i @alessiofrittoli/next-api
 ```
 
 ---
@@ -103,6 +85,16 @@ You can eventually run specific suits like so:
 ```bash
 pnpm test:jest
 pnpm test:jest:jsdom
+```
+
+Run tests with coverage.
+
+An HTTP server is then started to serve coverage files from `./coverage` folder.
+
+⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
+
+```bash
+pnpm test:coverage
 ```
 
 ---
