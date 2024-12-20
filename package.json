@@ -1,6 +1,6 @@
 {
 	"name": "@alessiofrittoli/next-api",
-	"version": "0.1.0",
+	"version": "0.1.0-alpha.1",
 	"description": "Next.js API utility library",
 	"author": {
 		"name": "Alessio Frittoli",
@@ -40,7 +40,8 @@
 		"test:coverage": "concurrently --prefix none --kill-others \"pnpm jest --watchAll --verbose --coverage\" \"pnpm test:serve-coverage\"",
 		"test:coverage:jsdom": "JSDOM=true pnpm test:coverage",
 		"test:jest": "pnpm test jest.test.ts",
-		"test:jest:jsdom": "JSDOM=true pnpm test:jest"
+		"test:jest:jsdom": "JSDOM=true pnpm test:jest",
+		"test:next-response": "pnpm test next-response.test.ts"
 	},
 	"peerDependencies": {
 		"next": ">=15.0.0"

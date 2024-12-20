@@ -1,6 +1,6 @@
 # Next.js API utilities △
 
-Version 0.1.0
+Version 0.1.0-alpha.1
 
 ## Next.js API utility library
 
