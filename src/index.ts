@@ -1,2 +1,2 @@
-export { default as NextResponse } from './next-response'
+export { default as NextResponse } from './response'
 export type * from './types'

@@ -1,8 +1,11 @@
-enum ErrorCode
+import Exception from '@alessiofrittoli/exception/code'
+
+export enum Next
 {
-	UNKNOWN		= 'ERR:UNKNOWN',
-	EXPIRED		= 'ERR:EXPIRED',
-	EMPTY_VALUE	= 'ERR:EMPTYVALUE',
+	// other custom error codes...
 }
+
+const ErrorCode	= { Exception, Next }
+type ErrorCode	= MergedEnumValue<typeof ErrorCode>
 
 export default ErrorCode
