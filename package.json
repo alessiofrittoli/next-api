@@ -39,10 +39,10 @@
 			"import": "./dist/error/index.mjs",
 			"require": "./dist/error/index.cjs"
 		},
-		"./response": {
-			"types": "./dist/response/index.d.ts",
-			"import": "./dist/response/index.mjs",
-			"require": "./dist/response/index.cjs"
+		"./server": {
+			"types": "./dist/server/index.d.ts",
+			"import": "./dist/server/index.mjs",
+			"require": "./dist/server/index.cjs"
 		},
 		"./types": {
 			"types": "./dist/types/index.d.ts"
