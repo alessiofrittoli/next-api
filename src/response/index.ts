@@ -230,7 +230,7 @@ class NextResponse<Body = unknown> extends NextApiResponse<Body>
 			this.errorJson( new Exception(
 				'Empty, invalid or locked Request Body',
 				{
-					code	: ErrorCode.EMPTY_VALUE,
+					code	: ErrorCode.Exception.EMPTY_VALUE,
 					status	: ResponseStatus.UnprocessableEntity,
 				}
 			), init )
