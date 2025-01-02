@@ -1,15 +1,13 @@
 const project = require( '../../package.json' )
-const { addTypesReference } = require( '@alessiofrittoli/post-install-scripts' )
+const { addTypesReference } = require( '@alessiofrittoli/node-scripts/postinstall' )
 
 
 /** @type {import( '@alessiofrittoli/chain-functions/types' ).ChainLink<() => void | Promise<void>>} */
 const tsSetup = next => () => {
 	
-	/** @type {import( '@alessiofrittoli/post-install-scripts/types' ).AddTypesReferenceOptions} */
-	const options = {
-		projectName: project.name,
-	}
-	addTypesReference( options )
+	addTypesReference( {
+		name: project.name,
+	} )
 
 	return next()
 }
