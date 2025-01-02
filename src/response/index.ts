@@ -2,58 +2,28 @@ import { NextResponse as NextApiResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { removeTrailingSlash } from '@alessiofrittoli/url-utils/slash'
 
-import Exception from '@alessiofrittoli/exception'
+import { Exception } from '@alessiofrittoli/exception'
 import { ResponseStatus } from '@alessiofrittoli/http-server-status'
 import { message as responseMessage } from '@alessiofrittoli/http-server-status/message'
+import { StreamReader } from '@alessiofrittoli/stream-reader'
 
-import type Api from '../types/api'
-import ErrorCode from '../error'
+import { ErrorCode } from '@/error'
+import type { CorsHeadersOptions, NextResponseProps, NextResponseStreamIterator } from './types'
+import type { Api } from '@/types/api'
 
-
-export interface NextResponseProps
-{
-	/** The Response BodyInit. */
-	body?: BodyInit | null
-	/** ResponseInit */
-	init?: ResponseInit
-	/** The NextRequest instance. This is used internally to retrieve Request Headers. */
-	request?: NextRequest
-	/** An Object of {@link Api.CORSPolicy} defining custom policies for the API Response. If `true` CORS is enabled with the default configuration. */
-	cors?: Api.CORSPolicy | true
-}
-
-
-export interface CorsHeadersOptions
-{
-	/** An object of {@link Api.CORSPolicy} defining custom policies for the API Response. */
-	options?: Api.CORSPolicy
-	/** Custom Response Headers. */
-	headers?: Headers | HeadersInit
-}
-
-export type NextResponseIterator = (
-	| Generator<Uint8Array, void, unknown>
-	| AsyncGenerator<Uint8Array, void, unknown>
-)
-
-export type NextResponseStreamIterator = (
-	| ReadableStream | NextResponseIterator
-)
-
+export * from './types'
 
 /**
  * This class extends the [`NextResponse` API](https://nextjs.org/docs/app/api-reference/functions/next-response) with additional convenience methods.
  * 
- * FIXME: add link to doc
- * Read more: [Next API Docs: NextResponse](#todo-add-link)
  */
-class NextResponse<Body = unknown> extends NextApiResponse<Body>
+export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 {
 	/**
 	 * The NextResponse CORS options.
 	 *
 	 */
-	static CorsOptions?: Api.CORSPolicy | true
+	static CorsOptions?: Api.CORS.Policy | true
 
 
 	/**
@@ -116,30 +86,7 @@ class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	}
 
 
-	/**
-	 * Convert an Iterator into a ReadableStream.
-	 *
-	 * @link https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream#convert_async_iterator_to_stream
-	 *
-	 * @param	iterator The Iterator to convert.
-	 * @returns	A new ReadableStream instance
-	 */
-	static iteratorToStream( iterator: NextResponseIterator ): ReadableStream<Uint8Array>
-	{
-		return (
-			new ReadableStream<Uint8Array>( {
-				async pull( controller ) {
-
-					const { value, done } = await iterator.next()
-
-					if ( ! done ) return controller.enqueue( value )
-
-					return controller.close()
-
-				},
-			} )
-		)
-	}
+	static iteratorToStream = StreamReader.generatorToReadableStream
 
 
 	/**
@@ -148,8 +95,8 @@ class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 * @param	iterator The Iterator to stream.
 	 * @returns	A new Response with Iterator ReadableStream Body.
 	 */
-	static stream(
-		iterator: NextResponseStreamIterator,
+	static stream<T = unknown>(
+		iterator: NextResponseStreamIterator<T>,
 		init?	: ResponseInit,
 	)
 	{
@@ -187,7 +134,7 @@ class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 */
 	static successJson<JsonBody>( body: JsonBody, init?: ResponseInit, time?: number )
 	{
-		const data: Api.Response<JsonBody> = {
+		const data: Api.Route.ResponseBody<JsonBody> = {
 			ms		: time,
 			message	: body,
 		}
@@ -242,10 +189,10 @@ class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 * Enables Cross Origin Resource Sharing.
 	 *
 	 * @param	request	The incoming NextRequest instance.
-	 * @param	cors	( Optional ) An Object of {@link Api.CORSPolicy} defining custom policies for the API Response.
+	 * @param	cors	( Optional ) An Object of {@link Api.CORS.Policy} defining custom policies for the API Response.
 	 * @returns The NextResponse instance allowing chaining methods.
 	 */
-	static cors( request?: NextRequest, cors?: Api.CORSPolicy )
+	static cors( request?: NextRequest, cors?: Api.CORS.Policy )
 	{
 		const origin = request?.headers.get( 'origin' )
 
@@ -337,7 +284,3 @@ class NextResponse<Body = unknown> extends NextApiResponse<Body>
 
 	}
 }
-
-
-
-export default NextResponse

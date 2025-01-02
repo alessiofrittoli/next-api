@@ -20,6 +20,9 @@ importers:
       '@alessiofrittoli/node-scripts':
         specifier: ^2.2.1
         version: 2.2.1
+      '@alessiofrittoli/stream-reader':
+        specifier: ^1.1.0
+        version: 1.1.0
       '@alessiofrittoli/type-utils':
         specifier: ^1.5.0
         version: 1.5.0
@@ -92,6 +95,9 @@ packages:
 
   '@alessiofrittoli/node-scripts@2.2.1':
     resolution: {integrity: sha512-VP9pUyrPhudlv/1UOxb1BfisKOSAAl/0H8beM5Udn3ddMHPVbrP4ul1rLqDbHWsFzePmpOiOsvOpEAsj2YPnWA==}
+
+  '@alessiofrittoli/stream-reader@1.1.0':
+    resolution: {integrity: sha512-wTVNCAwVnBe/kUvmq+Dx1SH0cLyfhaymgMSyXDhX06uHbzkrMqPg2f9SEvIDCozN2nDzSMbaE4RPUzULFhOcoA==}
 
   '@alessiofrittoli/type-utils@1.5.0':
     resolution: {integrity: sha512-UCc2S8PCYaWS9uaKwF3k8MkU1vPqulnGk08NFDBi+dmjFQvyGCkG1mkSvfQjjXz0XOzh5zgn+mVqP+fZLF2CcQ==}
@@ -2715,6 +2721,8 @@ snapshots:
   '@alessiofrittoli/http-server-status@1.0.0': {}
 
   '@alessiofrittoli/node-scripts@2.2.1': {}
+
+  '@alessiofrittoli/stream-reader@1.1.0': {}
 
   '@alessiofrittoli/type-utils@1.5.0':
     dependencies:
