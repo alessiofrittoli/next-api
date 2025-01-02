@@ -20,9 +20,6 @@ importers:
       '@alessiofrittoli/node-scripts':
         specifier: ^2.2.1
         version: 2.2.1
-      '@alessiofrittoli/post-install-scripts':
-        specifier: ^0.3.0
-        version: 0.3.0
       '@alessiofrittoli/type-utils':
         specifier: ^1.5.0
         version: 1.5.0
@@ -95,9 +92,6 @@ packages:
 
   '@alessiofrittoli/node-scripts@2.2.1':
     resolution: {integrity: sha512-VP9pUyrPhudlv/1UOxb1BfisKOSAAl/0H8beM5Udn3ddMHPVbrP4ul1rLqDbHWsFzePmpOiOsvOpEAsj2YPnWA==}
-
-  '@alessiofrittoli/post-install-scripts@0.3.0':
-    resolution: {integrity: sha512-2NSRCoxYJLxod5sBIJxAE3YYJAe3Wu01beu1gkDHV5EZdnU+ekGq+NqJp1NUWeNZceny3FPGaPULWVrlHV5cJQ==}
 
   '@alessiofrittoli/type-utils@1.5.0':
     resolution: {integrity: sha512-UCc2S8PCYaWS9uaKwF3k8MkU1vPqulnGk08NFDBi+dmjFQvyGCkG1mkSvfQjjXz0XOzh5zgn+mVqP+fZLF2CcQ==}
@@ -2721,8 +2715,6 @@ snapshots:
   '@alessiofrittoli/http-server-status@1.0.0': {}
 
   '@alessiofrittoli/node-scripts@2.2.1': {}
-
-  '@alessiofrittoli/post-install-scripts@0.3.0': {}
 
   '@alessiofrittoli/type-utils@1.5.0':
     dependencies:
