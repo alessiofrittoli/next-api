@@ -1,5 +1,7 @@
 import type { NextRequest } from 'next/server'
 
+export * from './read'
+
 
 /**
  * Get request IP address.
