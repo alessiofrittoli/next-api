@@ -1,4 +1,5 @@
 import type { NextRequest } from 'next/server'
+import type { NextResponse } from '@/response'
 
 
 /**
@@ -122,7 +123,7 @@ export namespace Api
 		 * Represents the return type of an API handler function.
 		 * It can either be a `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
-		export type HandlerReturnType = globalThis.Response | Promise<globalThis.Response>
+		export type Response = globalThis.Response | NextResponse
 
 
 		/**
@@ -132,7 +133,7 @@ export namespace Api
 		 * @param request - The request object containing the payload of type `T`.
 		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
-		export type Handler<T = unknown> = ( request: Api.Route.Request<T> ) => HandlerReturnType
+		export type Handler<T = unknown> = ( request: Api.Route.Request<T> ) => Response | Promise<Response>
 
 
 		/**
@@ -149,7 +150,7 @@ export namespace Api
 		export type DynamicHandler<
 			Body = unknown,
 			RouteParams = unknown,
-		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams> ) => HandlerReturnType
+		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams> ) => Response | Promise<Response>
 	}
 
 }
