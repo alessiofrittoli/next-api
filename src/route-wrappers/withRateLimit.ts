@@ -2,20 +2,20 @@ import { getRequestIp } from '@/request'
 import { NextResponse } from '@/response'
 import type { Api } from '@/types/api'
 
-let countTimeout: number | NodeJS.Timeout | null = null
+let timeout: number | NodeJS.Timeout | null = null
 
-const quotaMap	= new Map<string, number>()
-type QuotaMap	= typeof quotaMap
+const list	= new Map<string, number>()
+type List	= typeof list
 
 
 /**
  * A handler function that is called when the rate limit quota is reached for a given IP address.
  *
  * @param requestIp - The IP address of the request that has reached the quota.
- * @param quotaMap - A map containing the quota information.
+ * @param list - A map containing the quota information for each IP address.
  * @returns A promise that resolves to void or void.
  */
-export type OnQuotaReachedHandler = ( requestIp: string, quotaMap: QuotaMap ) => void | Promise<void>
+export type OnQuotaReachedHandler = ( requestIp: string, list: List ) => void | Promise<void>
 
 
 /**
@@ -38,21 +38,24 @@ export const withRateLimit = async <T = unknown>(
 	inS?	: number,
 	cors?	: true | Api.CORS.Policy,
 	onQuotaReached?: OnQuotaReachedHandler,
-) => {
+): Promise<Api.Route.Response> => {
 
 	if ( ! max || max === Infinity ) return next( request )
 
 	const requestIp = await getRequestIp( request ) || '::1'
 
 	if ( inS ) {
-		if ( countTimeout ) clearTimeout( countTimeout )
-		countTimeout = setTimeout( () => {
-			quotaMap.delete( requestIp )
-		}, inS * 1000 )
+		if ( timeout ) {
+			clearTimeout( timeout )
+			timeout = null
+		}
+		timeout = setTimeout( () => {
+			list.delete( requestIp )
+		}, inS * 1000 )		
 	}
 
-	const quota = ( quotaMap.get( requestIp ) || 0 ) + 1
-	quotaMap.set( requestIp, quota )
+	const quota = ( list.get( requestIp ) || 0 ) + 1
+	list.set( requestIp, quota )
 
 	if ( quota <= max ) {
 		return next( request )
@@ -72,7 +75,7 @@ export const withRateLimit = async <T = unknown>(
 	} : undefined
 	
 	if ( onQuotaReached ) {
-		await onQuotaReached( requestIp, quotaMap )
+		await onQuotaReached( requestIp, list )
 	}
 
 	return (
