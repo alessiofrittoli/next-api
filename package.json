@@ -105,7 +105,7 @@
 	},
 	"dependencies": {
 		"@alessiofrittoli/chain-functions": "^2.0.0",
-		"@alessiofrittoli/exception": "^2.0.0",
+		"@alessiofrittoli/exception": "^2.1.0",
 		"@alessiofrittoli/http-server-status": "^1.0.0",
 		"@alessiofrittoli/node-scripts": "^2.2.1",
 		"@alessiofrittoli/stream-reader": "^1.1.0",

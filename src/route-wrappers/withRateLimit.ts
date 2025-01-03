@@ -38,7 +38,7 @@ export const withRateLimit = async <T = unknown>(
 	inS?	: number,
 	cors?	: true | Api.CORS.Policy,
 	onQuotaReached?: OnQuotaReachedHandler,
-): Promise<Api.Route.Response> => {
+) => {
 
 	if ( ! max || max === Infinity ) return next( request )
 

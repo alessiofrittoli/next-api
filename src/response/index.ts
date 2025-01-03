@@ -8,7 +8,7 @@ import { message as responseMessage } from '@alessiofrittoli/http-server-status/
 import { StreamReader } from '@alessiofrittoli/stream-reader'
 
 import { ErrorCode } from '@/error'
-import type { CorsHeadersOptions, NextResponseProps, NextResponseStreamIterator } from './types'
+import type { CorsHeadersOptions, NextResponseProps, NextResponseStreamInput } from './types'
 import type { Api } from '@/types/api'
 
 export * from './types'
@@ -86,31 +86,6 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	}
 
 
-	static iteratorToStream = StreamReader.generatorToReadableStream
-
-
-	/**
-	 * Stream Iterator to Response.
-	 *
-	 * @param	iterator The Iterator to stream.
-	 * @returns	A new Response with Iterator ReadableStream Body.
-	 */
-	static stream<T = unknown>(
-		iterator: NextResponseStreamIterator<T>,
-		init?	: ResponseInit,
-	)
-	{
-		return (
-			new Response(
-				iterator instanceof ReadableStream
-					? iterator
-					: this.iteratorToStream( iterator ),
-				this.CorsInit( init )
-			)
-		)
-	}
-
-
 	/**
 	 * Send a JSON Response.
 	 *
@@ -129,13 +104,11 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 *
 	 * @param	body The JSON response body.
 	 * @param	init ( Optional ) The ResponseInit.
-	 * @param	time ( Optional ) Execution time in MS.
 	 * @returns	The NextResponse instance.
 	 */
-	static successJson<JsonBody>( body: JsonBody, init?: ResponseInit, time?: number )
+	static successJson<JsonBody>( body: JsonBody, init?: ResponseInit )
 	{
 		const data: Api.Route.ResponseBody<JsonBody> = {
-			ms		: time,
 			message	: body,
 		}
 
@@ -162,6 +135,31 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 		init.status		= status
 
 		return this.json( error, init )
+	}
+
+
+	static generatorToStream = StreamReader.generatorToReadableStream
+
+
+	/**
+	 * Stream to Response.
+	 *
+	 * @param	stream The Iterator or ReadableStream to stream.
+	 * @returns	A new Response with ReadableStream Body.
+	 */
+	static stream<T = unknown>(
+		stream	: NextResponseStreamInput<T>,
+		init?	: ResponseInit,
+	)
+	{
+		return (
+			new Response(
+				stream instanceof ReadableStream
+					? stream
+					: this.generatorToStream( stream ),
+				this.CorsInit( init )
+			)
+		)
 	}
 
 
