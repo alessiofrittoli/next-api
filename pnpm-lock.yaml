@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@alessiofrittoli/exception':
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.1.0
+        version: 2.1.0
       '@alessiofrittoli/http-server-status':
         specifier: ^1.0.0
         version: 1.0.0
@@ -87,8 +87,8 @@ packages:
   '@alessiofrittoli/chain-functions@2.0.0':
     resolution: {integrity: sha512-6Qm/F813NvqbnhMHtJWZnPKKrOqSC+pZzOxz8g2XC5OoZZ2fWcYvfE3q8aeAx/tKoWelRVr8GJm6vF9vwGTprw==}
 
-  '@alessiofrittoli/exception@2.0.0':
-    resolution: {integrity: sha512-472IItTO3pp8AC1LvmKvGGNsDC0LVJO20jvre/+0hk3Pabqq6O8af0rX3wEjYkDbCG/v3UakJHeZ4dxjeXC09Q==}
+  '@alessiofrittoli/exception@2.1.0':
+    resolution: {integrity: sha512-z9GKcwPUcpUhS4YX4oGn7rE/6x9WboRVsjJ/upZk+ePDyyWyHQVMFYvhi3FROetsqIrosEX8e5yT+DH1cNBbGw==}
 
   '@alessiofrittoli/http-server-status@1.0.0':
     resolution: {integrity: sha512-uBF+2VeGgX/AK44glrVV7EMVjvOW+hqnPIUullnNNStL0oBYHGiq9JF+V2w9Z9d/n1bP/gxEoF1mQU1CpdwU6w==}
@@ -2716,7 +2716,7 @@ snapshots:
 
   '@alessiofrittoli/chain-functions@2.0.0': {}
 
-  '@alessiofrittoli/exception@2.0.0': {}
+  '@alessiofrittoli/exception@2.1.0': {}
 
   '@alessiofrittoli/http-server-status@1.0.0': {}
 

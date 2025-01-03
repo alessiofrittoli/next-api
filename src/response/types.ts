@@ -38,6 +38,6 @@ export interface CorsHeadersOptions
  *
  * This type can be either a `ReadableStream` of type `T` or a `StreamGenerator` of type `T`.
  */
-export type NextResponseStreamIterator<T = unknown> = (
+export type NextResponseStreamInput<T = unknown> = (
 	| ReadableStream<T> | StreamGenerator<T>
 )

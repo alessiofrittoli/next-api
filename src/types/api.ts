@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server'
-import type { NextResponse } from '@/response'
 
 
 /**
@@ -114,16 +113,15 @@ export namespace Api
 		/** The JSON Response Type. */
 		export interface ResponseBody<T = unknown>
 		{
-			message	: T
-			ms?		: number
+			message: T
 		}
-		
+
 
 		/**
 		 * Represents the return type of an API handler function.
 		 * It can either be a `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
-		export type Response = globalThis.Response | NextResponse
+		export type Response = globalThis.Response | Promise<globalThis.Response>
 
 
 		/**
@@ -133,7 +131,7 @@ export namespace Api
 		 * @param request - The request object containing the payload of type `T`.
 		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
-		export type Handler<T = unknown> = ( request: Api.Route.Request<T> ) => Response | Promise<Response>
+		export type Handler<T = unknown> = ( request: Api.Route.Request<T> ) => Api.Route.Response
 
 
 		/**
@@ -150,7 +148,7 @@ export namespace Api
 		export type DynamicHandler<
 			Body = unknown,
 			RouteParams = unknown,
-		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams> ) => Response | Promise<Response>
+		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams> ) => Api.Route.Response
 	}
 
 }
