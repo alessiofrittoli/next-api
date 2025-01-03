@@ -22,7 +22,7 @@
 		"type": "git",
 		"url": "git+https://github.com/alessiofrittoli/next-api.git"
 	},
-	"main": "./dist/index.cjs",
+	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
 	"types": "./dist/index.d.ts",
 	"files": [
@@ -31,24 +31,32 @@
 	],
 	"exports": {
 		".": {
+			"types": "./dist/index.d.ts",
 			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
+			"require": "./dist/index.js"
 		},
 		"./error": {
 			"types": "./dist/error/index.d.ts",
 			"import": "./dist/error/index.mjs",
-			"require": "./dist/error/index.cjs"
+			"require": "./dist/error/index.js"
 		},
-		"./server": {
-			"types": "./dist/server/index.d.ts",
-			"import": "./dist/server/index.mjs",
-			"require": "./dist/server/index.cjs"
+		"./request": {
+			"types": "./dist/request/index.d.ts",
+			"import": "./dist/request/index.mjs",
+			"require": "./dist/request/index.js"
+		},
+		"./response": {
+			"types": "./dist/response/index.d.ts",
+			"import": "./dist/response/index.mjs",
+			"require": "./dist/response/index.js"
+		},
+		"./route-wrappers": {
+			"types": "./dist/route-wrappers/index.d.ts",
+			"import": "./dist/route-wrappers/index.mjs",
+			"require": "./dist/route-wrappers/index.js"
 		},
 		"./types": {
 			"types": "./dist/types/index.d.ts"
-		},
-		"./types/api": {
-			"types": "./dist/types/api.d.ts"
 		}
 	},
 	"sideEffects": false,
@@ -74,7 +82,7 @@
 		"test:next-response": "pnpm test next-response.test.ts"
 	},
 	"peerDependencies": {
-		"next": ">=14.0.0"
+		"next": ">=15.0.0"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.17.0",
@@ -100,7 +108,7 @@
 		"@alessiofrittoli/exception": "^2.0.0",
 		"@alessiofrittoli/http-server-status": "^1.0.0",
 		"@alessiofrittoli/node-scripts": "^2.2.1",
-		"@alessiofrittoli/post-install-scripts": "^0.3.0",
+		"@alessiofrittoli/stream-reader": "^1.1.0",
 		"@alessiofrittoli/type-utils": "^1.5.0",
 		"@alessiofrittoli/url-utils": "^1.0.0"
 	}

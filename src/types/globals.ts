@@ -10,4 +10,4 @@ declare global
 	}
 }
 
-export type DoNotUse = never
+export {}
