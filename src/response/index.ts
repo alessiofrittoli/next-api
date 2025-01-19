@@ -1,11 +1,11 @@
+import { ReadStream } from 'fs'
 import { NextResponse as NextApiResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { removeTrailingSlash } from '@alessiofrittoli/url-utils/slash'
 
 import { Exception } from '@alessiofrittoli/exception'
-import { ResponseStatus } from '@alessiofrittoli/http-server-status'
-import { message as responseMessage } from '@alessiofrittoli/http-server-status/message'
-import { StreamReader } from '@alessiofrittoli/stream-reader'
+import { generatorToReadableStream } from '@alessiofrittoli/stream-reader/utils'
+import type { StreamGenerator } from '@alessiofrittoli/stream-reader/types'
 
 import { ErrorCode } from '@/error'
 import type { CorsHeadersOptions, NextResponseProps, NextResponseStreamInput } from './types'
@@ -129,8 +129,8 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 		init		: ResponseInit = {},
 	)
 	{
-		const status	= ( init.status ?? exception.status ?? 500 ) as ResponseStatus
-		const message	= exception?.message || responseMessage[ status ] || 'Bad request.'
+		const status	= ( init.status ?? exception.status ?? 500 )
+		const message	= exception?.message || 'Bad request.'
 		const error		= new Exception( message, { ...exception, status } )
 		init.status		= status
 
@@ -138,7 +138,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	}
 
 
-	static generatorToStream = StreamReader.generatorToReadableStream
+	static generatorToStream = generatorToReadableStream
 
 
 	/**
@@ -154,9 +154,9 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	{
 		return (
 			new Response(
-				stream instanceof ReadableStream
-					? stream
-					: this.generatorToStream( stream ),
+				stream instanceof ReadableStream || stream instanceof ReadStream
+					? stream as ReadableStream<T>
+					: this.generatorToStream( stream as StreamGenerator<T> ),
 				this.CorsInit( init )
 			)
 		)
@@ -176,7 +176,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 				'Empty, invalid or locked Request Body',
 				{
 					code	: ErrorCode.Exception.EMPTY_VALUE,
-					status	: ResponseStatus.UnprocessableEntity,
+					status	: 422,
 				}
 			), init )
 		)
@@ -209,7 +209,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 * @param	init ( Optional ) The ResponseInit.
 	 * @returns	ResponseInit with CORS Response Headers, the given ResponseInit if CORS is disabled.
 	 */
-	private static CorsInit( init?: ResponseInit ): ResponseInit | undefined
+	static CorsInit( init?: ResponseInit ): ResponseInit | undefined
 	{
 		if ( ! this.CorsOptions ) return init
 
@@ -228,7 +228,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 * @param param0 ( Optional ) An object with optional `options` and `headers`. @see {@link CorsHeadersOptions}.
 	 * @returns	CORS Response Headers instance.
 	 */
-	private static CorsHeaders(
+	static CorsHeaders(
 		{ options = {}, headers }: CorsHeadersOptions = {}
 	)
 	{
