@@ -1,6 +1,9 @@
+import type { ReadStream } from 'fs'
+import type { ReadableStream as WebReadableStream } from 'node:stream/web'
 import type { NextRequest } from 'next/server'
 import type { StreamGenerator } from '@alessiofrittoli/stream-reader/types'
 import type { Api } from '@/types/api'
+
 
 /**
  * Interface representing the options for the NextResponse constructor.
@@ -39,5 +42,5 @@ export interface CorsHeadersOptions
  * This type can be either a `ReadableStream` of type `T` or a `StreamGenerator` of type `T`.
  */
 export type NextResponseStreamInput<T = unknown> = (
-	| ReadableStream<T> | StreamGenerator<T>
+	ReadStream | WebReadableStream<T> | ReadableStream<T> | StreamGenerator<T>
 )

@@ -105,8 +105,12 @@ describe( 'NextResponse', () => {
 
 				expect( response.body ).not.toBeUndefined()
 
-				const reader = new StreamReader<Uint8Array, string>( response.body! )
-				const chunks = await reader.read( chunk => decoder.decode( chunk ) )
+				const reader = new StreamReader<Uint8Array, string>( response.body!, {
+					transform( chunk ) {
+						return decoder.decode( chunk )
+					}
+				} )
+				const chunks = await reader.read()
 				expect( chunks ).toEqual( words )
 			} )
 
@@ -126,8 +130,12 @@ describe( 'NextResponse', () => {
 
 				expect( response.body ).not.toBeUndefined()
 
-				const reader = new StreamReader<Uint8Array, string>( response.body! )
-				const chunks = await reader.read( chunk => decoder.decode( chunk ) )
+				const reader = new StreamReader<Uint8Array, string>( response.body!, {
+					transform( chunk ) {
+						return decoder.decode( chunk )
+					}
+				} )
+				const chunks = await reader.read()
 				expect( chunks ).toEqual( words )
 			} )
 

@@ -72,20 +72,32 @@ export namespace Api
 		/**
 		 * Represents the context for an API request.
 		 *
-		 * @template T - The type of the parameters.
+		 * @template T The type of the parameters.
 		 */
 		export interface Context<T = unknown>
 		{
 			params: Promise<T>
 		}
+		
+		
+		/**
+		 * Represents the context for a catch-all route.
+		 * 
+		 * This type is used to define the context object that is passed to the route handler
+		 * for routes that match a catch-all pattern. The context includes an array of strings
+		 * that represent the fragments of the URL that were matched by the catch-all pattern.
+		 * 
+		 * @typeParam string[] - An array of strings representing the matched URL fragments.
+		 */
+		export type CatchAllContext = Api.Route.Context<string[]>
 
 
 		/**
 		 * Represents a Next.js API request with an optional generic type for extending the request object.
 		 *
-		 * @template T - An optional type to extend the NextApiRequest object. Defaults to `unknown`.
+		 * @template T An optional type to extend the NextApiRequest object. Defaults to `unknown`.
 		 */
-		export type Request<T = unknown> = NextRequest & T
+		export type Request<T = unknown> = NextRequest & Partial<T>
 
 
 		/**
@@ -127,8 +139,8 @@ export namespace Api
 		/**
 		 * Represents a handler function for processing API requests.
 		 *
-		 * @template T - The type of the request payload. Defaults to `unknown`.
-		 * @param request - The request object containing the payload of type `T`.
+		 * @template T The type of the request payload. Defaults to `unknown`.
+		 * @param request The request object containing the payload of type `T`.
 		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
 		export type Handler<T = unknown> = ( request: Api.Route.Request<T> ) => Api.Route.Response
@@ -137,11 +149,11 @@ export namespace Api
 		/**
 		 * Represents a dynamic handler function for API routes.
 		 *
-		 * @template Body - The type of the request body. Defaults to `unknown`.
-		 * @template RouteParams - The type of the route parameters. Defaults to `unknown`.
+		 * @template Body The type of the request body. Defaults to `unknown`.
+		 * @template RouteParams The type of the route parameters. Defaults to `unknown`.
 		 *
-		 * @param request - The incoming request object containing the body of type `Body`.
-		 * @param ctx - The context object containing route parameters of type `RouteParams`.
+		 * @param request The incoming request object containing the body of type `Body`.
+		 * @param ctx The context object containing route parameters of type `RouteParams`.
 		 *
 		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
@@ -149,6 +161,20 @@ export namespace Api
 			Body = unknown,
 			RouteParams = unknown,
 		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams> ) => Api.Route.Response
+		
+		
+		/**
+		 * Represents a dynamic handler function for catch-all API routes.
+		 *
+		 * @template Body The type of the request body. Defaults to `unknown`.
+		 * 
+		 * @param request The request object containing the body and other request details.
+		 * @param ctx The context object for the catch-all route.
+		 * @returns The response object for the route.
+		 */
+		export type CatchAllHandler<
+			Body = unknown
+		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.CatchAllContext ) => Api.Route.Response
 	}
 
 }

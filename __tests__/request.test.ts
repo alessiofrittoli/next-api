@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getRequestIp, readJsonBody } from '@/request'
+import { getRequestFiles, getRequestIp, OnRead, readFormDataBody, readJsonBody } from '@/request'
 
 
 describe( 'getRequestIp', () => {
@@ -72,7 +72,7 @@ describe( 'readJsonBody', () => {
 	} )
 
 
-	it( 'allows multiple reading', async () => {
+	it( 'allows subsequent reading', async () => {
 		const response	= new Response( JSON.stringify( requestBody ) )
 		const result1	= await readJsonBody( response, true )
 		expect( response.bodyUsed ).toBe( false )
@@ -97,6 +97,204 @@ describe( 'readJsonBody', () => {
 		expect( response.bodyUsed ).toBe( true )
 		expect( readJsonBody( response ) )
 			.resolves.toBeNull()
+	} )
+
+} )
+
+
+describe( 'readFormDataBody', () => {
+
+	type ExpectedFileNames = (
+		| 'file-1-name'
+		| 'file-2-name'
+	)
+
+	type ExpectedBody = {
+		'field-1': string
+		'field-2': 'true'
+	} & {
+		[ F in ExpectedFileNames ]: File
+	}
+
+	const body = new FormData()
+
+	body.append( 'field-1', 'value 1' )
+	body.append( 'field-2', 'true' )
+	body.append( 'file-1-name', new File( [ Buffer.from( 'file-1' ) ], 'file-1.txt', { type: 'text/plain' } ) )
+	body.append( 'file-2-name', new File( [ Buffer.from( 'file-2' ) ], 'file-2.txt', { type: 'text/plain' } ) )
+
+
+	it( 'returns a FormData TypedMap', async () => {
+		const response	= new Response( body )
+		const fields	= await readFormDataBody<ExpectedBody>( response )
+
+		expect( fields ).toBeInstanceOf( Map )
+		expect( fields.get( 'field-1' ) ).toBe( 'value 1' )
+		expect( fields.get( 'field-2' ) === 'true' ).toBe( true )
+	} )
+
+
+	it( 'allows subsequent reading', async () => {
+		const response	= new Response( body )
+		const result1	= await readFormDataBody<ExpectedBody>( response, true )
+		expect( response.bodyUsed ).toBe( false )
+		const result2	= await readFormDataBody<ExpectedBody>( response )
+		expect( response.bodyUsed ).toBe( true )
+
+		expect( result1 ).toBeInstanceOf( Map )
+		expect( result1.get( 'field-1' ) ).toBe( 'value 1' )
+		expect( result2 ).toBeInstanceOf( Map )
+		expect( result2.get( 'field-1' ) ).toBe( 'value 1' )
+	} )
+	
+	
+	it( 'returns an array value when multiple fields with same name are provided', async () => {
+
+		type ExpectedBody = {
+			'field-1': string | string[]
+		}
+		const body = new FormData()
+		body.append( 'field-1', 'value 1' )
+		body.append( 'field-1', 'value 2' )
+
+		const fields = await readFormDataBody<ExpectedBody>( new Response( body ) )
+
+		expect( fields.get( 'field-1' ) ).toEqual( [ 'value 1', 'value 2' ] )
+	} )
+
+
+	it( 'handles received files correctly', async () => {
+		const fields = await readFormDataBody<ExpectedBody>( new Response( body ) )
+		expect( fields.get( 'file-1-name' ) )
+			.toBeInstanceOf( File )
+		expect( fields.get( 'file-2-name' ) )
+			.toBeInstanceOf( File )
+
+		expect( Buffer.from( await fields.get( 'file-1-name' )!.arrayBuffer() ).toString() )
+			.toBe( 'file-1' )
+		expect( Buffer.from( await fields.get( 'file-2-name' )!.arrayBuffer() ).toString() )
+			.toBe( 'file-2' )		
+	} )
+	
+	
+	it( 'accepts an `onRead` callback that transform the received field', async () => {
+		type ExpectedOutputBody = {
+			'field-2': boolean
+		} & Omit<ExpectedBody, 'field-2'>
+
+		const onRead: OnRead<ExpectedBody, ExpectedOutputBody> = ( key, value ) => {
+			if ( key === 'field-2' ) return value === 'true'
+			return value
+		}
+		const fields = await (
+			readFormDataBody<
+				ExpectedBody, ExpectedOutputBody
+			>( new Response( body ), false, onRead )
+		)
+
+		expect( fields.get( 'field-1' ) ).toBe( 'value 1' )
+		expect( fields.get( 'field-2' ) ).toBe( true )
+	} )
+
+
+	it( 'throws an error when an empty body is provided', async () => {
+		expect( () => readFormDataBody( new Response() ) )
+			.rejects.toThrow( 'Content-Type was not one of "multipart/form-data" or "application/x-www-form-urlencoded"' )
+	} )
+
+
+	it( 'throws an error when body is locked', async () => {
+		const response	= new Response( body )
+		await readFormDataBody<ExpectedBody>( response )
+
+		expect( () => readFormDataBody( response ) )
+			.rejects.toThrow( 'Body is unusable: Body has already been read' )
+	} )
+
+} )
+
+
+describe( 'getRequestFiles', () => {
+
+	const body = new FormData()
+
+	body.append( 'field-1', 'value 1' )
+	body.append( 'field-2', 'true' )
+	body.append( 'file-1-name', new File( [ Buffer.from( 'file-1' ) ], 'file-1.txt', { type: 'text/plain' } ) )
+	body.append( 'file-1-name', new File( [ Buffer.from( 'file-1.1' ) ], 'file-1.1.txt', { type: 'text/plain' } ) )
+	body.append( 'file-2-name', new File( [ Buffer.from( 'file-2' ) ], 'file-2.txt', { type: 'text/plain' } ) )	
+
+	it( 'returns a flat Array of received files', async () => {
+		const files = await getRequestFiles( new Response( body ) )
+		
+		expect( files.length ).toBe( 3 )
+
+		await Promise.all(
+			files.map( async file => {
+				let expected = ''
+				switch ( file.name ) {
+					case 'file-1.txt':
+						expected = 'file-1'
+						break
+					case 'file-1.1.txt':
+						expected = 'file-1.1'
+						break
+					case 'file-2.txt':
+						expected = 'file-2'
+						break
+				}
+				expect( file ).toBeInstanceOf( File )
+				expect( Buffer.from( await file.arrayBuffer() ).toString() )
+					.toBe( expected )
+			} )
+		)
+	} )
+
+
+	it( 'allows subsequent reading', async () => {
+		const response	= new Response( body )
+		const result1	= await getRequestFiles( response, true )
+		expect( response.bodyUsed ).toBe( false )
+		const result2	= await getRequestFiles( response )
+		expect( response.bodyUsed ).toBe( true )
+
+		expect( result1.length ).toBe( 3 )
+		expect( result2.length ).toBe( 3 )
+
+		await Promise.all(
+			result1.concat( result2 ).map( async file => {
+				let expected = ''
+				switch ( file.name ) {
+					case 'file-1.txt':
+						expected = 'file-1'
+						break
+					case 'file-1.1.txt':
+						expected = 'file-1.1'
+						break
+					case 'file-2.txt':
+						expected = 'file-2'
+						break
+				}
+				expect( file ).toBeInstanceOf( File )
+				expect( Buffer.from( await file.arrayBuffer() ).toString() )
+					.toBe( expected )
+			} )
+		)
+	} )
+
+
+	it( 'throws an error when an empty body is provided', async () => {
+		expect( () => getRequestFiles( new Response() ) )
+			.rejects.toThrow( 'Content-Type was not one of "multipart/form-data" or "application/x-www-form-urlencoded"' )
+	} )
+
+
+	it( 'throws an error when body is locked', async () => {
+		const response	= new Response( body )
+		await getRequestFiles( response )
+
+		expect( () => getRequestFiles( response ) )
+			.rejects.toThrow( 'Body is unusable: Body has already been read' )
 	} )
 
 } )
