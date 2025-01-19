@@ -45,17 +45,19 @@ interface DefaultFormDataReadMap
  * A callback type for processing form data entries when read. 
  * This function is called for each key-value pair in the form data.
  * 
- * @template T The type of the form data map.
- * @template K The key of the form data entry.
+ * @template I The type of the form data map.
+ * @template OK The key of the form data entry.
  * 
  * @param key The key of the form data entry.
  * @param value The value associated with the key.
  * @returns The processed value for the form data entry.
  */
 export type OnRead<
-	T extends Record<string, unknown | unknown[]> = DefaultFormDataReadMap,
-	K extends keyof T = keyof T
-> = ( key: K, value: T[ K ] ) => T[ K ]
+	I extends Record<string, unknown | unknown[]> = DefaultFormDataReadMap,
+	O extends Record<string, unknown | unknown[]> = I,
+	IK extends keyof I = keyof I,
+	OK extends keyof O = keyof O,
+> = ( key: OK, value: I[ IK ] ) => O[ OK ]
 
 
 /**
@@ -71,15 +73,16 @@ export type OnRead<
  * @returns A map of form data entries, where the keys are the field names and the values are the field values.
  */
 export const readFormDataBody = async <
-	T extends Record<string, unknown | unknown[]> = DefaultFormDataReadMap
+	I extends Record<string, unknown | unknown[]> = DefaultFormDataReadMap,
+	O extends Record<string, unknown | unknown[]> = I,
 >(
 	body	: Request | Api.Route.Request | Response,
 	clone	: boolean = false,
-	onRead?	: OnRead<T>,
+	onRead?	: OnRead<I, O>,
 ) => {
 
 	const formData	= await ( clone ? body.clone() : body ).formData()
-	const entries	= getTypedMap<T>()
+	const entries	= getTypedMap<O>()
 
 	Array.from( formData.entries() )
 		.map( ( [ k, v ], index, array ) => {
@@ -88,10 +91,10 @@ export const readFormDataBody = async <
 			const subitems	= array.filter( ( [ _k ] ) => _k === k )
 			const value		= (
 				subitems.length <= 1 ? v : subitems.map( ( [, v ] ) => v )
-			) as T[ typeof k ]
+			) as I[ typeof k ]
 
 			if ( onRead ) return entries.set( k, onRead( k, value ) )
-			entries.set( k, value )
+			entries.set( k, value as unknown as O[ typeof k ] )
 		} )
 	return entries
 
