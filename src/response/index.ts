@@ -1,17 +1,17 @@
-import { ReadStream } from 'fs'
 import { NextResponse as NextApiResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { removeTrailingSlash } from '@alessiofrittoli/url-utils/slash'
 
 import { Exception } from '@alessiofrittoli/exception'
 import { generatorToReadableStream } from '@alessiofrittoli/stream-reader/utils'
-import type { StreamGenerator } from '@alessiofrittoli/stream-reader/types'
+import { isGeneratorObject } from '@alessiofrittoli/web-utils/generators'
 
 import { ErrorCode } from '@/error'
 import type { CorsHeadersOptions, NextResponseProps, NextResponseStreamInput } from './types'
 import type { Api } from '@/types/api'
 
 export * from './types'
+
 
 /**
  * This class extends the [`NextResponse` API](https://nextjs.org/docs/app/api-reference/functions/next-response) with additional convenience methods.
@@ -154,9 +154,9 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	{
 		return (
 			new Response(
-				stream instanceof ReadableStream || stream instanceof ReadStream
+				! isGeneratorObject( stream )
 					? stream as ReadableStream<T>
-					: this.generatorToStream( stream as StreamGenerator<T> ),
+					: this.generatorToStream( stream ),
 				this.CorsInit( init )
 			)
 		)

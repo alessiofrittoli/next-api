@@ -27,8 +27,8 @@ importers:
         specifier: ^1.0.0
         version: 1.0.0
       '@alessiofrittoli/web-utils':
-        specifier: ^0.4.0
-        version: 0.4.0
+        specifier: ^0.6.0
+        version: 0.6.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.18.0
@@ -105,8 +105,8 @@ packages:
   '@alessiofrittoli/url-utils@1.0.0':
     resolution: {integrity: sha512-z4LJUtS6tT2MRDu6Sqcy7fYNW03B44+JXEQC3Xn1MpbWJ8xgz0a52dDvlag8e7eGivDGOfX7ZeXYq6iEI+Z27w==}
 
-  '@alessiofrittoli/web-utils@0.4.0':
-    resolution: {integrity: sha512-XEhM/ZdOqjq7VQAwOJ9h7gaaIc40TBaeLP9T4BSGQkRbFX7EMlfG3+C63JKXjkkU1Gdw5SgiYLG97Ch3Sq11FA==}
+  '@alessiofrittoli/web-utils@0.6.0':
+    resolution: {integrity: sha512-MQmSpFJCQo9TVc9lkSZW5NE8QXaCEwFGSpl9DSoUS+sfRZP+eRlqRaOgIBBXBk2sKY0nnYIIN4ZgUcP076c12A==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -2740,7 +2740,7 @@ snapshots:
 
   '@alessiofrittoli/url-utils@1.0.0': {}
 
-  '@alessiofrittoli/web-utils@0.4.0': {}
+  '@alessiofrittoli/web-utils@0.6.0': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:
