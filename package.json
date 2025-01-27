@@ -40,6 +40,11 @@
 			"import": "./dist/error/index.mjs",
 			"require": "./dist/error/index.js"
 		},
+		"./middlewares": {
+			"types": "./dist/middlewares/index.d.ts",
+			"import": "./dist/middlewares/index.mjs",
+			"require": "./dist/middlewares/index.js"
+		},
 		"./request": {
 			"types": "./dist/request/index.d.ts",
 			"import": "./dist/request/index.mjs",
