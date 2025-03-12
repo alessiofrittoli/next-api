@@ -27,8 +27,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       '@alessiofrittoli/web-utils':
-        specifier: ^1.1.1
-        version: 1.1.1
+        specifier: ^1.1.2
+        version: 1.1.2
     devDependencies:
       '@eslint/js':
         specifier: ^9.22.0
@@ -114,8 +114,8 @@ packages:
   '@alessiofrittoli/web-utils@0.7.0':
     resolution: {integrity: sha512-WmdTP1yQIK6IeY/Ys+6++LPYKH1mV+X6sWt0G801MQqMdzBWfmhzw0lSVUmN+kKzlM5MJJzXE+yqsh5HP6PGhQ==}
 
-  '@alessiofrittoli/web-utils@1.1.1':
-    resolution: {integrity: sha512-HS8Fij2BzFXuw8qfNLh+PzAwfSkIfvvkTQlyFuuoTZRRccrGjpnYb+drQGmfos3oHo6az9pyIbaQyeDH5ZTQKQ==}
+  '@alessiofrittoli/web-utils@1.1.2':
+    resolution: {integrity: sha512-G82EFkKjBYW+xwkws/z1AvMSQDUadQ8hhjdy3ZbhS0OMfSPCFYvD26j7TNYxqVxyisTJzOETSe/+L5WTVbUD8Q==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -2769,7 +2769,7 @@ snapshots:
 
   '@alessiofrittoli/web-utils@0.7.0': {}
 
-  '@alessiofrittoli/web-utils@1.1.1':
+  '@alessiofrittoli/web-utils@1.1.2':
     dependencies:
       '@alessiofrittoli/date-utils': 2.2.0
       '@alessiofrittoli/math-utils': 1.9.0
