@@ -1,6 +1,6 @@
 import { withRateLimit, type OnQuotaReachedHandler } from '@/route-wrappers/withRateLimit'
 import { NextResponse } from '@/response'
-import type { Api } from '@/types/api'
+import type { Api } from '@/types'
 
 
 describe( 'withRateLimit', () => {

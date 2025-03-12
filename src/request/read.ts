@@ -1,5 +1,5 @@
 import { getTypedMap } from '@alessiofrittoli/web-utils'
-import type { Api } from '@/types/api'
+import type { Api } from '@/types'
 
 
 /**

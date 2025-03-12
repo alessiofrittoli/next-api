@@ -8,7 +8,7 @@ import { isGeneratorObject } from '@alessiofrittoli/web-utils/generators'
 
 import { ErrorCode } from '@/error'
 import type { CorsHeadersOptions, NextResponseProps, NextResponseStreamInput } from './types'
-import type { Api } from '@/types/api'
+import type { Api } from '@/types'
 
 export * from './types'
 
