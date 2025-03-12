@@ -23,7 +23,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 * The NextResponse CORS options.
 	 *
 	 */
-	static CorsOptions?: Api.CORS.Policy | true
+	static CorsOptions?: Api.CORS.Policy
 
 
 	/**
@@ -130,8 +130,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	)
 	{
 		const status	= ( init.status ?? exception.status ?? 500 )
-		const message	= exception?.message || 'Bad request.'
-		const error		= new Exception( message, { ...exception, status } )
+		const error		= new Exception( exception.message, { ...exception, status } )
 		init.status		= status
 
 		return this.json( error, init )
@@ -214,7 +213,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 		if ( ! this.CorsOptions ) return init
 
 		const headers = this.CorsHeaders( {
-			options: typeof this.CorsOptions !== 'boolean' ? this.CorsOptions : undefined,
+			options: this.CorsOptions,
 			headers: init?.headers,
 		} )
 
@@ -235,9 +234,9 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 		const wildCard = '*'
 
 		const { ALLOWED_API_ORIGINS }	= process.env
-		const { requestOrigin }			= options || {}
-		const allowedMethods			= ( options?.methods || this.CorsAllowedMethods )
-		let allowedOrigin				= options?.origin || ALLOWED_API_ORIGINS || wildCard
+		const { requestOrigin }			= options
+		const allowedMethods			= ( options.methods || this.CorsAllowedMethods )
+		let allowedOrigin				= options.origin || ALLOWED_API_ORIGINS || wildCard
 
 		if ( typeof allowedOrigin === 'string' && allowedOrigin !== wildCard ) {
 			allowedOrigin = (
@@ -248,6 +247,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 					.map( removeTrailingSlash )	// remove trailing slashes.
 			)
 		}
+		
 		if (
 			requestOrigin &&
 			(
@@ -261,12 +261,12 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 		const corsHeaders = new Headers( headers )
 		corsHeaders.set( 'Access-Control-Allow-Origin', allowedOrigin.toString() )
 
-		if ( typeof options?.credentials !== 'undefined' ) {
+		if ( typeof options.credentials !== 'undefined' ) {
 			corsHeaders.set( 'Access-Control-Allow-Credentials', options.credentials.toString() )
 		}
 
-		const allowdHeaders = this.CorsAllowedHeaders.concat( options?.headers || [] )
-		const exposeHeaders = this.CorsExposedHeaders.concat( options?.exposedHeaders || [] )
+		const allowdHeaders = this.CorsAllowedHeaders.concat( options.headers || [] )
+		const exposeHeaders = this.CorsExposedHeaders.concat( options.exposedHeaders || [] )
 
 		if ( allowdHeaders.length > 0 ) {
 			corsHeaders.set( 'Access-Control-Allow-Headers', allowdHeaders.join( ', ' ) )

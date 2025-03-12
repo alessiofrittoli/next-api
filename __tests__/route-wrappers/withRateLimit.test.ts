@@ -117,4 +117,27 @@ describe( 'withRateLimit', () => {
 		expect( exposedHeaders ).toContain( 'Retry-After' )
 		expect( exposedHeaders ).toContain( 'X-Max-Requests' )
 	} )
+
+
+	it( 'doesn\'t set `Retry-After` and `X-Max-Requests` if `inS` is falsey', async () => {
+		const response = await withRateLimit( request, next, 5, 0 )
+		const response2 = await withRateLimit( request, next, 5 )
+
+		expect( response ).toBeInstanceOf( NextResponse )
+		expect( response2 ).toBeInstanceOf( NextResponse )
+		
+		expect( response.headers.has( 'Retry-After' ) ).not.toBe( true )
+		expect( response.headers.has( 'X-Max-Requests' ) ).not.toBe( true )
+		expect( response2.headers.has( 'Retry-After' ) ).not.toBe( true )
+		expect( response2.headers.has( 'X-Max-Requests' ) ).not.toBe( true )
+	} )
+	
+	
+	it( 'fallback to empty Array if `cors.exposedHeaders` is not defined', async () => {
+		const response = await withRateLimit( request, next, 5, 10, {} )
+		const exposedHeaders = response.headers.get( 'Access-Control-Expose-Headers' )?.split( ', ' )
+		expect( exposedHeaders ).toEqual( [
+			...NextResponse.CorsExposedHeaders, 'X-Max-Requests'
+		] )
+	} )
 } )
