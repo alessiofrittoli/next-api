@@ -1,6 +1,6 @@
 import { getRequestIp } from '@/request'
 import { NextResponse } from '@/response'
-import type { Api } from '@/types/api'
+import type { Api } from '@/types'
 
 let timeout: number | NodeJS.Timeout | null = null
 
