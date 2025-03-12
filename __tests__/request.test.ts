@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { getRequestFiles, getRequestIp, OnRead, readFormDataBody, readJsonBody } from '@/request'
 
 

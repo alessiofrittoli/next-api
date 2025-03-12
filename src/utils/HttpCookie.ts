@@ -1,6 +1,9 @@
 import type { Api } from '@/types'
 import { Cookie } from '@alessiofrittoli/web-utils/storage/Cookie'
-import type { ParsedCookieMap, RawCookie } from '@alessiofrittoli/web-utils/storage/Cookie'
+import type { RawCookie, ParsedCookie, ParsedCookieMap } from '@alessiofrittoli/web-utils/storage/Cookie'
+
+export { Priority, SameSite } from '@alessiofrittoli/web-utils/storage/Cookie'
+export type { RawCookie, ParsedCookie, ParsedCookieMap }
 
 
 /**
@@ -34,13 +37,30 @@ export class HttpCookie
 		this._request = request
 		return this
 	}
-
-
+	
+	
+	/**
+	 * Set internal `headers` reference so `HttpCookie` can set cookies to the Response Headers.
+	 * 
+	 * @param	headers The Response `Headers` instance. Those headers must be returned in the server response so cookies can be effectively set.
+	 * @returns	The `HttpCookie` reference for chaining purposes.
+	 */
 	static headers( headers: Headers )
 	{
 		this._headers = headers
-
 		return this
+	}
+
+
+	/**
+	 * Get Response Headers.
+	 * 
+	 * @returns The Response Headers.
+	 */
+	static getHeaders()
+	{
+		this._headers ||= new Headers()
+		return this._headers
 	}
 
 
@@ -52,8 +72,10 @@ export class HttpCookie
 	 */
 	static get<T, K extends string | number | symbol = string>( name: K )
 	{
+		if ( ! this._request ) return
+
 		return (
-			Cookie.fromListString<Record<K, T>>( this._request?.headers.get( 'Cookie' ) || '' )
+			Cookie.fromListString<Record<K, T>>( this._request.headers.get( 'Cookie' ) || '' )
 				.get( name )
 		)
 	}
@@ -71,15 +93,15 @@ export class HttpCookie
 
 
 	/**
-	 * Set a cookie to `Document.cookie`.
+	 * Set a cookie to Response Headers.
 	 * 
 	 * @param	options The cookie options or a parsed Cookie Map.
-	 * @returns	The set Cookie Map if successful, `false` otherwise.
+	 * @returns	The `HttpCookie` reference for chaining purposes.
 	 */
 	static set<K = string, V = unknown>( options: RawCookie<K, V> | ParsedCookieMap<K, V> )
 	{
-		const cookie	= options instanceof Map ? options : Cookie.parse( options )
-		this._headers	||= new Headers()
+		const cookie	= Cookie.parse( options )
+		const headers	= this.getHeaders()
 
 		if ( ! cookie.has( 'path' ) ) {
 			cookie.set( 'path', '/' )
@@ -89,9 +111,9 @@ export class HttpCookie
 			cookie.set( 'httpOnly', true )
 		}
 		
-		this._headers.append( 'Set-Cookie', Cookie.toString( cookie ) )
+		headers.append( 'Set-Cookie', Cookie.toString( cookie ) )
 
-		return this._headers
+		return this
 	}
 
 
@@ -103,12 +125,10 @@ export class HttpCookie
 	 */
 	static delete<K = string, V = unknown>( options: RawCookie<K, V> | ParsedCookieMap<K, V> )
 	{
-		const cookie = (
-			options instanceof Map ? options : Cookie.parse( options )
-		).set( 'maxAge', 0 )
-
 		return (
-			HttpCookie.set( cookie )
+			HttpCookie.set(
+				Cookie.parse( options ).set( 'maxAge', 0 )
+			)
 		)
 	}
 
@@ -116,4 +136,5 @@ export class HttpCookie
 	static toString			= Cookie.toString
 	static fromString		= Cookie.fromString
 	static fromListString	= Cookie.fromListString
+	static parse			= Cookie.parse
 }
