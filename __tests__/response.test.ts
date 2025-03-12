@@ -222,6 +222,22 @@ describe( 'NextResponse', () => {
 			} )
 
 		} )
+		
+		
+		describe( 'NextResponse.CorsHeaders()', () => {
+
+			it( 'fallback to an empty object if no argument is passed and returns default Response Headers', () => {
+
+				const headers = NextResponse.CorsHeaders()
+
+				expect( headers.get( 'Access-Control-Allow-Origin' ) ).toBe( '*' )
+				expect( headers.get( 'Access-Control-Allow-Headers' ) ).toBe( NextResponse.CorsAllowedHeaders.join( ', ' ) )
+				expect( headers.get( 'Access-Control-Expose-Headers' ) ).toBe( NextResponse.CorsExposedHeaders.join( ', ' ) )
+				expect( headers.get( 'Access-Control-Allow-Methods' ) ).toBe( NextResponse.CorsAllowedMethods.join( ', ' ) )
+
+			} )
+
+		} )
 
 	} )
 
