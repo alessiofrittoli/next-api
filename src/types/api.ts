@@ -176,5 +176,4 @@ export namespace Api
 			Body = unknown
 		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.CatchAllContext ) => Api.Route.Response
 	}
-
 }

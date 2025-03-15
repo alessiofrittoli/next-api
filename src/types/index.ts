@@ -1,2 +1,2 @@
 export type * from './api'
-export type * from './globals'
+export type * from './page'
