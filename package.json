@@ -112,11 +112,11 @@
 		"test:response": "pnpm test:watch response.test.ts"
 	},
 	"peerDependencies": {
-		"@types/react": "^19.0.10",
-		"@types/react-dom": "^19.0.4",
+		"@types/react": "^19",
+		"@types/react-dom": "^19",
 		"next": ">=15.0.0",
-		"react": "^19.0.0",
-		"react-dom": "^19.0.0"
+		"react": "^19",
+		"react-dom": "^19"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.22.0",
