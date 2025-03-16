@@ -10,6 +10,9 @@ import { withAwaitedParams } from '@/page-wrappers'
 import type { GenerateMetadata, PropsWithAwaitedParams,  } from '@/page-wrappers'
 
 
+/**
+ * @docs https://testing-library.com/docs/react-testing-library/intro
+ */
 describe( 'withAwaitedParams', () => {
 
 	it( 'renders the given component with awaited params and searchParams', async () => {
