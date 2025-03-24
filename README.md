@@ -16,6 +16,12 @@
 
 - [Getting started](#getting-started)
 - [API Reference](#api-reference)
+- [Development](#development)
+  - [Install depenendencies](#install-depenendencies)
+  - [Build the source code](#build-the-source-code)
+  - [ESLint](#eslint)
+  - [Jest](#jest)
+- [Contributing](#contributing)
 - [Security](#security)
 - [Credits](#made-with-)
 
@@ -40,6 +46,74 @@ pnpm i @alessiofrittoli/next-api
 ### API Reference
 
 -- Docs coming soon --
+
+---
+
+### Development
+
+#### Install depenendencies
+
+```bash
+npm install
+```
+
+or using `pnpm`
+
+```bash
+pnpm i
+```
+
+#### Build the source code
+
+Run the following command to test and build code for distribution.
+
+```bash
+pnpm build
+```
+
+#### [ESLint](https://www.npmjs.com/package/eslint)
+
+warnings / errors check.
+
+```bash
+pnpm lint
+```
+
+#### [Jest](https://npmjs.com/package/jest)
+
+Run all the defined test suites by running the following:
+
+```bash
+# Run tests and watch file changes.
+pnpm test:watch
+
+# Run tests in a CI environment.
+pnpm test:ci
+```
+
+- See [`package.json`](./package.json) file scripts for more info.
+
+Run tests with coverage.
+
+An HTTP server is then started to serve coverage files from `./coverage` folder.
+
+⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
+
+```bash
+test:coverage:serve
+```
+
+---
+
+### Contributing
+
+Contributions are truly welcome!
+
+Please refer to the [Contributing Doc](./CONTRIBUTING.md) for more information on how to start contributing to this project.
+
+Help keep this project up to date with [GitHub Sponsor][sponsor-url].
+
+[![GitHub Sponsor][sponsor-badge]][sponsor-url]
 
 ---
 
