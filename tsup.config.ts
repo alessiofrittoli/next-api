@@ -7,7 +7,6 @@ export default defineConfig( {
 		'src/page-wrappers/index.tsx', 'src/route-wrappers/index.ts',
 		'src/types/index.ts', 'src/utils/index.ts'
 	],
-	// entry		: [ 'src/**/index.(.ts|.tsx)' ],
 	format		: [ 'cjs', 'esm' ],
 	dts			: true,
 	splitting	: false,
