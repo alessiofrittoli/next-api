@@ -1,14 +1,21 @@
 # Next.js API utilities △
 
-[![NPM Latest Version][version-badge]][npm-url] [![Coverage Status][coverage-badge]][coverage-url] [![NPM Monthly Downloads][downloads-badge]][npm-url] [![Dependencies][deps-badge]][deps-url]
+[![NPM Latest Version][version-badge]][npm-url] [![Coverage Status][coverage-badge]][coverage-url] [![Socket Status][socket-badge]][socket-url] [![NPM Monthly Downloads][downloads-badge]][npm-url] [![Dependencies][deps-badge]][deps-url]
+
+[![GitHub Sponsor][sponsor-badge]][sponsor-url]
 
 [version-badge]: https://img.shields.io/npm/v/%40alessiofrittoli%2Fnext-api
 [npm-url]: https://npmjs.org/package/%40alessiofrittoli%2Fnext-api
 [coverage-badge]: https://coveralls.io/repos/github/alessiofrittoli/next-api/badge.svg
 [coverage-url]: https://coveralls.io/github/alessiofrittoli/next-api
+[socket-badge]: https://socket.dev/api/badge/npm/package/@alessiofrittoli/next-api
+[socket-url]: https://socket.dev/npm/package/@alessiofrittoli/next-api/overview
 [downloads-badge]: https://img.shields.io/npm/dm/%40alessiofrittoli%2Fnext-api.svg
 [deps-badge]: https://img.shields.io/librariesio/release/npm/%40alessiofrittoli%2Fnext-api
 [deps-url]: https://libraries.io/npm/%40alessiofrittoli%2Fnext-api
+
+[sponsor-badge]: https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2
+[sponsor-url]: https://github.com/sponsors/alessiofrittoli
 
 ## Next.js API utility library
 
