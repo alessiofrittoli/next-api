@@ -15,15 +15,42 @@ import type { GenerateMetadata, PropsWithAwaitedParams,  } from '@/page-wrappers
  */
 describe( 'withAwaitedParams', () => {
 
-	it( 'renders the given component with awaited params and searchParams', async () => {
+	it( 'renders the given component with awaited params and no searchParams', async () => {
 
 		const WrappedComponent = withAwaitedParams<{ id: string }, { query: string }>(
+			( { params, searchParams } ) => {
+				expect( searchParams ).toBeInstanceOf( Promise )
+				return (
+					<span>{ params.id }</span>
+				)
+			}
+		)
+
+		// ARRANGE
+		const { getByText } = (
+			render(
+				await WrappedComponent( {
+					params			: Promise.resolve( { id: '123' } ),
+					searchParams	: Promise.resolve( { query: 'test' } )
+				} )
+			)
+		)
+
+		// ASSERT
+		expect( getByText( '123' ) ).toBeInTheDocument()
+
+	} )
+
+
+	it( 'renders the given component with awaited params and searchParams', async () => {
+
+		const WrappedComponent = withAwaitedParams<{ id: string }, { query: string }, true>(
 			( { params, searchParams } ) => (
 				<div>
 					<span>{ params.id }</span>
 					<span>{ searchParams?.query }</span>
 				</div>
-			)
+			), true
 		)
 
 		// ARRANGE
@@ -45,7 +72,7 @@ describe( 'withAwaitedParams', () => {
 
 	it( 'calls `generateMetadata` with awaited `params`, `searchParams` and `parent` ResolvingMetadata', async () => {
 
-		const generateMetadata: GenerateMetadata<PropsWithAwaitedParams<{ id: string }, { query: string }>> = (
+		const generateMetadata: GenerateMetadata<PropsWithAwaitedParams<{ id: string }, { query: string }, true>> = (
 			jest.fn( props => ( {
 				title		: `Page - ${ props.params.id }`,
 				description	: `Query - ${ props.searchParams?.query }`,
@@ -53,7 +80,7 @@ describe( 'withAwaitedParams', () => {
 		)
 
 		const wrappedGenerateMetadata = (
-			withAwaitedParams<{ id: string }, { query: string }>( generateMetadata )
+			withAwaitedParams<{ id: string }, { query: string }, true>( generateMetadata, true )
 		)
 
 		const props: Page.PropsWithSearchParams<{ id: string }, { query: string }> = {

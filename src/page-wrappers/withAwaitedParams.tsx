@@ -108,7 +108,7 @@ export function withAwaitedParams<
 	V extends boolean = false,
 >(
 	Page: React.FC<React.PropsWithChildren<PropsWithAwaitedParams<T, U, V>>>,
-	awaitSearchParams: V,
+	awaitSearchParams?: V,
 ): (
 	( props: Page.PropsWithSearchParams<T, U> ) => Promise<React.JSX.Element>
 )
@@ -178,7 +178,7 @@ export function withAwaitedParams<
 	V extends boolean = false,
 >(
 	generateMetadata: GenerateMetadata<PropsWithAwaitedParams<T, U, V>>,
-	awaitSearchParams: V,
+	awaitSearchParams?: V,
 ): (
 	( props: Page.PropsWithSearchParams<T, U>, parent: ResolvingMetadata ) => Promise<Metadata>
 )
