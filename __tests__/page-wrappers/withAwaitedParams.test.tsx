@@ -7,8 +7,9 @@ import { render } from '@testing-library/react'
 import type { ResolvingMetadata } from 'next'
 import type { Page } from '@/types'
 import { withAwaitedParams } from '@/page-wrappers'
-import type { GenerateMetadata, PropsWithAwaitedParams,  } from '@/page-wrappers'
 
+type Param			= { id: string }
+type SearchParam	= { query: string }
 
 /**
  * @docs https://testing-library.com/docs/react-testing-library/intro
@@ -17,7 +18,7 @@ describe( 'withAwaitedParams', () => {
 
 	it( 'renders the given component with awaited params and no searchParams', async () => {
 
-		const WrappedComponent = withAwaitedParams<{ id: string }, { query: string }>(
+		const WrappedComponent = withAwaitedParams<Param, SearchParam>(
 			( { params, searchParams } ) => {
 				expect( searchParams ).toBeInstanceOf( Promise )
 				return (
@@ -44,7 +45,7 @@ describe( 'withAwaitedParams', () => {
 
 	it( 'renders the given component with awaited params and searchParams', async () => {
 
-		const WrappedComponent = withAwaitedParams<{ id: string }, { query: string }, true>(
+		const WrappedComponent = withAwaitedParams<Param, SearchParam, true>(
 			( { params, searchParams } ) => (
 				<div>
 					<span>{ params.id }</span>
@@ -72,7 +73,9 @@ describe( 'withAwaitedParams', () => {
 
 	it( 'calls `generateMetadata` with awaited `params`, `searchParams` and `parent` ResolvingMetadata', async () => {
 
-		const generateMetadata: GenerateMetadata<PropsWithAwaitedParams<{ id: string }, { query: string }, true>> = (
+		const generateMetadata: (
+			Page.GenerateMetadata<Page.AwaitedProps<Param, SearchParam, true>>
+		) = (
 			jest.fn( props => ( {
 				title		: `Page - ${ props.params.id }`,
 				description	: `Query - ${ props.searchParams?.query }`,
@@ -80,10 +83,10 @@ describe( 'withAwaitedParams', () => {
 		)
 
 		const wrappedGenerateMetadata = (
-			withAwaitedParams<{ id: string }, { query: string }, true>( generateMetadata, true )
+			withAwaitedParams<Param, SearchParam, true>( generateMetadata, true )
 		)
 
-		const props: Page.PropsWithSearchParams<{ id: string }, { query: string }> = {
+		const props: Page.Props<Param, SearchParam> = {
 			params			: Promise.resolve( { id: '123' } ),
 			searchParams	: Promise.resolve( { query: 'test' } )
 		}

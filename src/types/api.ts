@@ -1,4 +1,6 @@
 import type { NextRequest } from 'next/server'
+import type { Page } from './page'
+import type { NextResponseProps } from '@/response'
 
 
 /**
@@ -64,26 +66,21 @@ export namespace Api
 	export namespace Route
 	{
 		/**
+		 * Alias for {@link Page.Params} which share the same type.
+		 */
+		export type Params = Page.Params
+
+
+		/**
 		 * Represents the context for an API request.
 		 *
 		 * @template T The type of the parameters.
 		 */
-		export interface Context<T = unknown>
+		export interface Context<T extends Api.Route.Params | undefined = Api.Route.Params>
 		{
+			/** Route parameters. */
 			params: Promise<T>
 		}
-		
-		
-		/**
-		 * Represents the context for a catch-all route.
-		 * 
-		 * This type is used to define the context object that is passed to the route handler
-		 * for routes that match a catch-all pattern. The context includes an array of strings
-		 * that represent the fragments of the URL that were matched by the catch-all pattern.
-		 * 
-		 * @typeParam string[] - An array of strings representing the matched URL fragments.
-		 */
-		export type CatchAllContext = Api.Route.Context<string[]>
 
 
 		/**
@@ -131,43 +128,56 @@ export namespace Api
 
 
 		/**
-		 * Represents a handler function for processing API requests.
+		 * Represents an handler function that processes static API routes.
 		 *
-		 * @template T The type of the request payload. Defaults to `unknown`.
-		 * @param request The request object containing the payload of type `T`.
+		 * @template Body The type of the request payload. Defaults to `unknown`.
+		 * 
+		 * @param request The NextRequest object containing the payload of type `Body`.
+		 * 
 		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
-		export type Handler<T = unknown> = ( request: Api.Route.Request<T> ) => Api.Route.Response
+		export type DefaultHandler<Body = unknown> = ( request: Api.Route.Request<Body> ) => Api.Route.Response
 
 
 		/**
-		 * Represents a dynamic handler function for API routes.
+		 * Represents an handler function that processes dynamic or catch-all API routes.
 		 *
-		 * @template Body The type of the request body. Defaults to `unknown`.
-		 * @template RouteParams The type of the route parameters. Defaults to `unknown`.
-		 *
-		 * @param request The incoming request object containing the body of type `Body`.
-		 * @param ctx The context object containing route parameters of type `RouteParams`.
-		 *
+		 * @template Body			The type of the request payload. Defaults to `unknown`.
+		 * @template RouteParams	The type of the route parameters available only in dynamic and catch-all routes. Defaults to `unknown`.
+		 * 
+		 * @param request	The NextRequest object containing the payload of type `Body`.
+		 * @param ctx		The context object containing route parameters of type `RouteParams` available only in dynamic and catch-all routes.
+		 * 
 		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
 		export type DynamicHandler<
 			Body = unknown,
-			RouteParams = unknown,
+			RouteParams extends Api.Route.Params | undefined = Api.Route.Params,
 		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams> ) => Api.Route.Response
-		
+
 		
 		/**
-		 * Represents a dynamic handler function for catch-all API routes.
+		 * Represents an handler function that processes API routes.
 		 *
-		 * @template Body The type of the request body. Defaults to `unknown`.
+		 * @template Body			The type of the request payload. Defaults to `unknown`.
+		 * @template RouteParams	The type of the route parameters available only in dynamic and catch-all routes. Defaults to `unknown`.
 		 * 
-		 * @param request The request object containing the body and other request details.
-		 * @param ctx The context object for the catch-all route.
-		 * @returns The response object for the route.
+		 * @param request	The NextRequest object containing the payload of type `Body`.
+		 * @param ctx		The context object containing route parameters of type `RouteParams` available only in dynamic and catch-all routes.
+		 * 
+		 * @returns A `Response` object or a `Promise` that resolves to a `Response` object.
 		 */
-		export type CatchAllHandler<
-			Body = unknown
-		> = ( request: Api.Route.Request<Body>, ctx: Api.Route.CatchAllContext ) => Api.Route.Response
+		export type Handler<Body = unknown, RouteParams extends Api.Route.Params | undefined = undefined> = (
+			RouteParams extends undefined
+				? Api.Route.DefaultHandler<Body>
+				: Api.Route.DynamicHandler<Body, RouteParams>
+		)
+
+		export type CorsPreFlightHandler<
+			Body = unknown,
+			RouteParams extends Api.Route.Params | undefined = Api.Route.Params,
+		> = (
+			request: Api.Route.Request<Body>, ctx?: Api.Route.Context<RouteParams>, corsPolicy?: NextResponseProps[ 'cors' ]
+		) => Api.Route.Response
 	}
 }
