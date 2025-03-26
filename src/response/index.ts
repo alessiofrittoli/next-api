@@ -217,6 +217,9 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 			headers: init?.headers,
 		} )
 
+		// reset `CorsOptions` so next usage of `NextResponse` doesn't inherit unwanted options.
+		this.CorsOptions = undefined
+
 		return { ...init, headers }
 	}
 
