@@ -18,14 +18,8 @@ export namespace Api
 		/**
 		 * Represents the policy configuration for handling API requests.
 		 */
-		export interface Policy {
-			/**
-			 * The Request origin.
-			 * @remarks
-			 * This specifies the origin of the request. It can be a string or null.
-			 */
-			requestOrigin?: string | null;
-
+		export interface Policy
+		{
 			/**
 			 * The Request allowed origin.
 			 * @remarks
