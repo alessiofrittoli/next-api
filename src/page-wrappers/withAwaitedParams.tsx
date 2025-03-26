@@ -1,34 +1,6 @@
 import type { Page } from '@/types'
 import type { Metadata, ResolvingMetadata } from 'next'
 
-/**
- * Next.js React.FC Page props with awaited params.
- * 
- * @template T Custom type assigned to `props.params`.
- * @template U Custom type joined with the default type for `props.searchParams`.
- * @template V Indicates whether `props.searchParams` are awaited or not. Default: `false`.
- * 
- */
-export interface PropsWithAwaitedParams<
-	T = unknown,
-	U = unknown,
-	V extends boolean = false,
->
-{
-	/** Page parameters. */
-	params: T
-	/** Page URL Search Params. */
-	searchParams?: V extends false ? Promise<Page.SearchParams<U>> : Page.SearchParams<U> 
-}
-
-
-export type GenerateMetadata<
-	T = unknown,
-> = (
-	props	: T,
-	parent	: Awaited<ResolvingMetadata>,
-) => Metadata | Promise<Metadata>
-
 
 /**
  * Check if function is a Next.js React.FC Page component or `generateMetadata` function.
@@ -58,7 +30,7 @@ export const isPageReactFC = <
  * 
  * #### Awaited page params (no `searchParams` usage).
  * 
- * ```ts
+ * ```tsx
  * withAwaitedParams<{ dynamicPageSlug: string }>( props => {
  * 	const { params } = props
  * 
@@ -72,7 +44,7 @@ export const isPageReactFC = <
  * 
  * #### Awaited page params with manual `searchParams` resolution.
  * 
- * ```ts
+ * ```tsx
  * withAwaitedParams<{ dynamicPageSlug: string }>( async props => {
  * 	const { params }	= props
  * 	const searchParams	= await props.searchParams
@@ -89,7 +61,7 @@ export const isPageReactFC = <
  * 
  * #### Awaited page params with auto `searchParams` resolution.
  * 
- * ```ts
+ * ```tsx
  * withAwaitedParams<{ dynamicPageSlug: string }, { utm_source: string }, true>( props => {
  * 	const { params }		= props
  * 	const { searchParams }	= props
@@ -103,14 +75,14 @@ export const isPageReactFC = <
  * ```
  */
 export function withAwaitedParams<
-	T = unknown,
-	U = unknown,
+	T extends Page.Params = Page.Params,
+	U extends Record<string, Page.SearchParam> = Record<string, Page.SearchParam>,
 	V extends boolean = false,
 >(
-	Page: React.FC<React.PropsWithChildren<PropsWithAwaitedParams<T, U, V>>>,
+	Page: React.FC<React.PropsWithChildren<Page.AwaitedProps<T, U, V>>>,
 	awaitSearchParams?: V,
 ): (
-	( props: Page.PropsWithSearchParams<T, U> ) => Promise<React.JSX.Element>
+	( props: Page.Props<T, U> ) => Promise<React.JSX.Element>
 )
 
 
@@ -173,14 +145,14 @@ export function withAwaitedParams<
  * ```
  */
 export function withAwaitedParams<
-	T = unknown,
-	U = unknown,
+	T extends Page.Params = Page.Params,
+	U extends Record<string, Page.SearchParam> = Record<string, Page.SearchParam>,
 	V extends boolean = false,
 >(
-	generateMetadata: GenerateMetadata<PropsWithAwaitedParams<T, U, V>>,
+	generateMetadata: Page.GenerateMetadata<Page.AwaitedProps<T, U, V>>,
 	awaitSearchParams?: V,
 ): (
-	( props: Page.PropsWithSearchParams<T, U>, parent: ResolvingMetadata ) => Promise<Metadata>
+	( props: Page.Props<T, U>, parent: ResolvingMetadata ) => Promise<Metadata>
 )
 
 
@@ -198,28 +170,28 @@ export function withAwaitedParams<
  * @returns	The Next.js Page `React.FunctionComponent` Wrapper that Next.js executes while rendering the page or the Next.js Page `generateMetadata` Wrapper that Next.js executes while rendering the page.
  */
 export function withAwaitedParams<
-	T = unknown,
-	U = unknown,
+	T extends Page.Params = Page.Params,
+	U extends Record<string, Page.SearchParam> = Record<string, Page.SearchParam>,
 	V extends boolean = false,
 >( Page: (
-	| React.FC<React.PropsWithChildren<PropsWithAwaitedParams<T, U, V>>>
-	| GenerateMetadata<PropsWithAwaitedParams<T, U, V>>
+	| React.FC<React.PropsWithChildren<Page.AwaitedProps<T, U, V>>>
+	| Page.GenerateMetadata<Page.AwaitedProps<T, U, V>>
 ), awaitSearchParams: V = false as V ): (
-	( props: Page.PropsWithSearchParams<T, U>, parent: ResolvingMetadata ) => Promise<Metadata | React.JSX.Element>
+	( props: Page.Props<T, U>, parent: ResolvingMetadata ) => Promise<Metadata | React.JSX.Element>
 )
 {
 	return (
-		async ( props: Page.PropsWithSearchParams<T, U>, parent: ResolvingMetadata ) => {
+		async ( props: Page.Props<T, U>, parent: ResolvingMetadata ) => {
 			
 			const params		= await props.params
 			const searchParams	= (
 				awaitSearchParams
 					? await props.searchParams
 					: props.searchParams
-			) as PropsWithAwaitedParams<T, U, V>[ 'searchParams' ]
+			) as Page.AwaitedProps<T, U, V>[ 'searchParams' ]
 
 			return (
-				isPageReactFC<React.PropsWithChildren<PropsWithAwaitedParams<T, U, V>>>( Page, parent )
+				isPageReactFC<React.PropsWithChildren<Page.AwaitedProps<T, U, V>>>( Page, parent )
 					? <Page
 						{ ...props }
 						params={ params }
