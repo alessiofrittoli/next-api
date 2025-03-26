@@ -109,7 +109,7 @@
 		"test:route-wrappers": "pnpm test:watch route-wrappers/*",
 		"test:utils": "pnpm test:watch utils/*",
 		"test:request": "pnpm test:watch request.test.ts",
-		"test:response": "pnpm test:watch response.test.ts"
+		"test:response": "pnpm test:watch response/*"
 	},
 	"peerDependencies": {
 		"@types/react": "^19",
