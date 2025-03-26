@@ -23,7 +23,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 * The NextResponse CORS options.
 	 *
 	 */
-	static CorsOptions?: Api.CORS.Policy
+	static CorsOptions?: CorsHeadersOptions[ 'options' ]
 
 
 	/**
@@ -191,12 +191,9 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 	 */
 	static cors( request?: NextRequest, cors?: Api.CORS.Policy )
 	{
-		const origin = request?.headers.get( 'origin' )
+		const requestOrigin = request?.headers.get( 'origin' ) || undefined
 
-		this.CorsOptions = {
-			...cors,
-			requestOrigin: cors?.requestOrigin || origin
-		}
+		this.CorsOptions = { ...cors, requestOrigin }
 
 		return this
 	}
@@ -216,6 +213,9 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 			options: this.CorsOptions,
 			headers: init?.headers,
 		} )
+
+		// reset `CorsOptions` so next usage of `NextResponse` doesn't inherit unwanted options.
+		this.CorsOptions = undefined
 
 		return { ...init, headers }
 	}

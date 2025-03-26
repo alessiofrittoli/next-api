@@ -28,7 +28,7 @@ export interface NextResponseProps
 export interface CorsHeadersOptions
 {
 	/** An object of {@link Api.CORS.Policy} defining custom policies for the API Response. */
-	options?: Api.CORS.Policy
+	options?: Api.CORS.Policy & { requestOrigin?: string }
 	/** Custom Response Headers. */
 	headers?: Headers | HeadersInit
 }
