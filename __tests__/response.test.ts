@@ -181,6 +181,27 @@ describe( 'NextResponse', () => {
 		} )
 
 
+		it(
+			'set allowed origin to request origin if credentials is set to true and no allowed origin as been specified or `*` has been given',
+			() => {
+				const { headers } = new NextResponse( { cors: {
+					credentials: true,
+				}, request } )
+
+				const allowedOrigin = headers.get( 'Access-Control-Allow-Origin' )
+				expect( allowedOrigin ).toBe( origin )
+				
+				const { headers: headers2 } = new NextResponse( { cors: {
+					credentials	: true,
+					origin		: '*',
+				}, request } )
+
+				const allowedOrigin2 = headers2.get( 'Access-Control-Allow-Origin' )
+				expect( allowedOrigin2 ).toBe( origin )
+			}
+		)
+
+
 		describe( 'NextResponse.cors()', () => {
 
 			it( 'allows chaining', () => {
