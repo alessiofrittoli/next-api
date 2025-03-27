@@ -180,7 +180,8 @@ export function withAwaitedParams<
 	( props: Page.Props<T, U>, parent: ResolvingMetadata ) => Promise<Metadata | React.JSX.Element>
 )
 {
-	return (
+	
+	const WithAwaitedParams = (
 		async ( props: Page.Props<T, U>, parent: ResolvingMetadata ) => {
 			
 			const params		= await props.params
@@ -202,4 +203,7 @@ export function withAwaitedParams<
 
 		}
 	)
+
+	return WithAwaitedParams
+
 }
