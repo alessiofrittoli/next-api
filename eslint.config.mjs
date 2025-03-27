@@ -1,23 +1,25 @@
-import globals from 'globals'
-import pluginJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import { FlatCompat } from '@eslint/eslintrc'
+import { fixupConfigRules } from '@eslint/compat'
 
-/**
- * Initial file generated with `npm lint -- --init`
- * 
- * @type {import('eslint').Linter.Config[]}
- */
-// @ts-expect-error `languageOptions` property in `tseslint.configs.recommended` result incompatible with `eslint` config types.
-const tseslintReccommended = tseslint.configs.recommended
+const __filename	= fileURLToPath( import.meta.url )
+const __dirname		= dirname( __filename )
+
+const compat = new FlatCompat( {
+	baseDirectory: __dirname,
+} )
+
 
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
-	{ languageOptions: { globals: { ...globals.browser, ...globals.node } } },
-	pluginJs.configs.recommended,
-	...tseslintReccommended,
-	{ files: [ 'src/**/*.{js,mjs,cjs,ts}' ] },
+	...compat.extends( 'next/core-web-vitals', 'next/typescript' ),
+	...fixupConfigRules( compat.extends( 'plugin:react-server-components/recommended' ) ),
 	{ ignores: [ 'dist', 'coverage', 'scripts' ] },
 	{ rules: {
+		// disable this rule since we have no `pages` or `app` folder.
+		'@next/next/no-html-link-for-pages': 'off',
+		// namespaces are beautiful
 		'@typescript-eslint/no-namespace': 'off',
 	} },
 ]
