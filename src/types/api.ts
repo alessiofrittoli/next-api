@@ -173,11 +173,20 @@ export namespace Api
 				: Api.Route.DynamicHandler<Body, RouteParams>
 		)
 
+
+		/**
+		 * Represent the OPTIONS method API route that handles the CORS preflight request.
+		 * 
+		 * @param request	The NextRequest object containing the payload of type `Body`.
+		 * @param ctx		The context object containing route parameters of type `RouteParams` available only in dynamic and catch-all routes.
+		 * 
+		 * @returns A 204 `Response` object or a `Promise` that resolves to a `Response` object.
+		 */
 		export type CorsPreFlightHandler<
 			Body = unknown,
 			RouteParams extends Api.Route.Params | undefined = Api.Route.Params,
 		> = (
-			request: Api.Route.Request<Body>, ctx?: Api.Route.Context<RouteParams>, corsPolicy?: NextResponseProps[ 'cors' ]
+			request: Api.Route.Request<Body>, ctx: Api.Route.Context<RouteParams>, corsPolicy?: NextResponseProps[ 'cors' ]
 		) => Api.Route.Response
 	}
 }
