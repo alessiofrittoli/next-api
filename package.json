@@ -1,6 +1,6 @@
 {
 	"name": "@alessiofrittoli/next-api",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"description": "Next.js API utility library",
 	"author": {
 		"name": "Alessio Frittoli",
@@ -114,7 +114,7 @@
 	"peerDependencies": {
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
-		"next": ">=15.0.0",
+		"next": ">=15.2.3",
 		"react": "^19",
 		"react-dom": "^19"
 	},
