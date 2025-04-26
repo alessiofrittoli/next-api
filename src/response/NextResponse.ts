@@ -80,7 +80,7 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 			)
 		}
 
-		super( body, NextResponse.CorsInit( init ) )
+		super( body as BodyInit, NextResponse.CorsInit( init ) )
 	}
 
 
@@ -127,11 +127,11 @@ export class NextResponse<Body = unknown> extends NextApiResponse<Body>
 		init		: ResponseInit = {},
 	)
 	{
-		const status	= ( init.status ?? exception.status ?? 500 )
-		const error		= new Exception( exception.message, { ...exception, status } )
-		init.status		= status
+		const status		= init.status || exception.status || 500
+		init.status			= status
+		exception.status	= status
 
-		return this.json( error, init )
+		return this.json( exception, init )
 	}
 
 
