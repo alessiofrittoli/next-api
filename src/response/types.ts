@@ -12,7 +12,7 @@ import type { Api } from '@/types'
 export interface NextResponseProps
 {
 	/** The Response BodyInit. */
-	body?: BodyInit | null
+	body?: ArrayBufferLike | BodyInit | null
 	/** ResponseInit */
 	init?: ResponseInit
 	/** The NextRequest instance. This is used internally to retrieve Request Headers. */
