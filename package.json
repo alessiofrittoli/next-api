@@ -1,6 +1,6 @@
 {
 	"name": "@alessiofrittoli/next-api",
-	"version": "0.10.0",
+	"version": "0.11.0",
 	"description": "Next.js API utility library",
 	"author": {
 		"name": "Alessio Frittoli",
