@@ -126,7 +126,7 @@
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.3.0",
 		"@types/jest": "^29.5.14",
-		"@types/node": "^22.15.2",
+		"@types/node": "^22.15.3",
 		"@types/react": ">=19",
 		"@types/react-dom": ">=19",
 		"concurrently": "^9.1.2",
@@ -147,7 +147,7 @@
 	},
 	"dependencies": {
 		"@alessiofrittoli/chain-functions": "^2.2.0",
-		"@alessiofrittoli/exception": "^3.0.0",
+		"@alessiofrittoli/exception": "^3.1.0",
 		"@alessiofrittoli/node-scripts": "^2.4.0",
 		"@alessiofrittoli/stream-reader": "^2.3.0",
 		"@alessiofrittoli/type-utils": "^1.7.0",
