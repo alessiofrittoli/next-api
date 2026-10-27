@@ -152,6 +152,7 @@
 		"globals": "^17.13.0",
 		"http-server": "^14.1.1",
 		"next": "^16.4.3",
+		"playwright": "^1.64.1",
 		"prettier": "^3.9.10",
 		"prettier-plugin-sort-imports": "^1.8.11",
 		"react": "^19.3.1",
