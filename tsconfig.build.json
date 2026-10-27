@@ -1,0 +1,11 @@
+{
+	"extends": "@alessiofrittoli/package-configs/tsconfig/nextjs-bundler.json",
+	"include": ["**/*.ts", "**/*.tsx"],
+	"exclude": ["./dist"],
+	"compilerOptions": {
+		"paths": {
+			"@/*": ["./src/*"],
+			"#/*": ["./*"]
+		}
+	}
+}
