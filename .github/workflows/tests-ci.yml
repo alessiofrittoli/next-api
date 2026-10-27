@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Setup environment
-        uses: alessiofrittoli/github-actions/.github/actions/setup-pnpm-node@v1.1
+        uses: alessiofrittoli/github-actions/.github/actions/setup-pnpm-node@v1.2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -21,7 +21,7 @@ jobs:
         run: pnpm lint
 
       - name: Setup Playwright
-        uses: alessiofrittoli/github-actions/.github/actions/setup-playwright@feat(playwright)/add-Setup-Playwright-composite-action
+        uses: alessiofrittoli/github-actions/.github/actions/setup-playwright@v1.2
 
       - name: Run unit tests
         run: pnpm test:coverage:ci
