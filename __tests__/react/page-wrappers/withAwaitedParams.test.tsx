@@ -1,29 +1,13 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { createRoot, type Root } from 'react-dom/client'
+import { describe, expect, it, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { withAwaitedParams } from '@/page-wrappers'
 import type { ResolvingMetadata } from 'next'
-import { page } from 'vitest/browser'
 import type { Page } from '@/types'
-import { act } from 'react'
 
 type Param = { id: string }
 type SearchParam = { query: string }
 
 describe('withAwaitedParams', () => {
-	let container: HTMLDivElement
-	let root: Root
-
-	beforeEach(() => {
-		container = document.createElement('div')
-		document.body.appendChild(container)
-		root = createRoot(container)
-	})
-
-	afterEach(() => {
-		act(() => root.unmount())
-		container.remove()
-	})
-
 	it('renders the given component with awaited params and no searchParams', async () => {
 		const WrappedComponent = withAwaitedParams<Param, SearchParam>(({ params, searchParams }) => {
 			expect(searchParams).toBeInstanceOf(Promise)
@@ -31,17 +15,15 @@ describe('withAwaitedParams', () => {
 		})
 
 		// ARRANGE
-		await act(async () =>
-			root.render(
-				await WrappedComponent({
-					params: Promise.resolve({ id: '123' }),
-					searchParams: Promise.resolve({ query: 'test' }),
-				}),
-			),
+		render(
+			await WrappedComponent({
+				params: Promise.resolve({ id: '123' }),
+				searchParams: Promise.resolve({ query: 'test' }),
+			}),
 		)
 
 		// ASSERT
-		await expect.element(page.getByText('123')).toBeInTheDocument()
+		expect(screen.getByText('123')).toBeInTheDocument()
 	})
 
 	it('renders the given component with awaited params and searchParams', async () => {
@@ -56,18 +38,16 @@ describe('withAwaitedParams', () => {
 		)
 
 		// ARRANGE
-		await act(async () =>
-			root.render(
-				await WrappedComponent({
-					params: Promise.resolve({ id: '123' }),
-					searchParams: Promise.resolve({ query: 'test' }),
-				}),
-			),
+		render(
+			await WrappedComponent({
+				params: Promise.resolve({ id: '123' }),
+				searchParams: Promise.resolve({ query: 'test' }),
+			}),
 		)
 
 		// ASSERT
-		await expect.element(page.getByText('123')).toBeInTheDocument()
-		await expect.element(page.getByText('test')).toBeInTheDocument()
+		expect(screen.getByText('123')).toBeInTheDocument()
+		expect(screen.getByText('test')).toBeInTheDocument()
 	})
 
 	it('calls `generateMetadata` with awaited `params`, `searchParams` and `parent` ResolvingMetadata', async () => {

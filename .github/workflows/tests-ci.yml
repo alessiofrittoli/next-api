@@ -20,9 +20,6 @@ jobs:
       - name: Linting
         run: pnpm lint
 
-      - name: Setup Playwright
-        uses: alessiofrittoli/github-actions/.github/actions/setup-playwright@feat(playwright)/add-Setup-Playwright-composite-action
-
       - name: Run unit tests
         run: pnpm test:coverage:ci
 

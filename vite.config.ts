@@ -1,7 +1,6 @@
 /// <reference types='vitest/config' />
 
 import { viteConfig } from '@alessiofrittoli/package-configs/vite'
-import { playwright } from '@vitest/browser-playwright'
 
 export default viteConfig({
 	test: {
@@ -17,15 +16,10 @@ export default viteConfig({
 			{
 				extends: true,
 				test: {
-					name: 'browser',
+					name: 'react',
+					environment: 'jsdom',
 					include: ['__tests__/react/**/*.test.tsx'],
 					setupFiles: ['__tests__/react/setup.ts'],
-					browser: {
-						enabled: true,
-						headless: true,
-						provider: playwright({}),
-						instances: [{ browser: 'chromium' }],
-					},
 				},
 			},
 		],

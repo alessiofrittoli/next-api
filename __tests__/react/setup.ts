@@ -1,12 +1,10 @@
-declare global {
-	var IS_REACT_ACT_ENVIRONMENT: boolean
-}
+import { afterEach } from 'vitest'
+import { cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
 
 /**
- * Tells React that `act()` is being used in a test environment.
+ * Unmounts React trees mounted with `render()` after each test.
  *
- * @see https://react.dev/reference/react/act#error-the-current-testing-environment-is-not-configured-to-support-act
+ * @see https://testing-library.com/docs/react-testing-library/api#cleanup
  */
-globalThis.IS_REACT_ACT_ENVIRONMENT = true
-
-export {}
+afterEach(() => cleanup())
