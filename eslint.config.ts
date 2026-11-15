@@ -4,11 +4,6 @@ import { eslintConfig } from '@alessiofrittoli/package-configs/eslint'
 export default eslintConfig(
 	...nextjsProfile,
 	{
-		settings: {
-			react: {
-				version: 'detect',
-			},
-		},
 		rules: {
 			// disable this rule since we have no `pages` or `app` folder.
 			'@next/next/no-html-link-for-pages': 'off',
