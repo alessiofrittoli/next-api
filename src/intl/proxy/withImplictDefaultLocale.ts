@@ -40,7 +40,7 @@ export const withImplictDefaultLocale =
 			}).pathname
 
 			Console.raw('•')
-				.fg.blue('withI18n')
+				.fg.blue('withImplictDefaultLocale')
 				.apply()
 				.raw('|')
 				.fg.cyan('rewrite')
