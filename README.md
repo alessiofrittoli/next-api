@@ -53,7 +53,7 @@
   - [Security](#security)
 - [API Reference](#api-reference)
   - [Internationalized routes](#internationalized-routes)
-    - [`IntlRoutes`](#intlRoutes)
+    - [`IntlRoutes`](#intlroutes)
 - [Credits](#made-with-)
 
 ---
