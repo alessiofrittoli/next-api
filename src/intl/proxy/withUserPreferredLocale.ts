@@ -22,19 +22,19 @@ export const withUserPreferredLocale =
 	next =>
 	async (request, event) => {
 		const { locales, defaultLocale, cookieName = 'user-locale' } = params
-		const { headers } = request
+		// const { headers } = request
 
-		const savedLocale = HttpCookie.request(request).get<Locale>(cookieName)?.get('value')
+		// const savedLocale = HttpCookie.request(request).get<Locale>(cookieName)?.get('value')
 
-		if (savedLocale && locales.includes(savedLocale) && !!headers.get('Referer')) {
-			/**
-			 * Do not save nor redirect to user locale if:
-			 *
-			 * - user has a valid locale cookie saved in his browser.
-			 * - user didn't access content directly
-			 */
-			return next(request, event)
-		}
+		// if (savedLocale && locales.includes(savedLocale) && !!headers.get('Referer')) {
+		// 	/**
+		// 	 * Do not save nor redirect to user locale if:
+		// 	 *
+		// 	 * - user has a valid locale cookie saved in his browser.
+		// 	 * - user didn't access content directly
+		// 	 */
+		// 	return next(request, event)
+		// }
 
 		const { nextUrl } = request
 
@@ -45,6 +45,7 @@ export const withUserPreferredLocale =
 		})
 
 		const response = await next(request, event)
+
 		const userLocale = getRequestLocale({
 			locales,
 			defaultLocale,

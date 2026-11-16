@@ -28,9 +28,3 @@ export type RouteMap<Locale extends string> = TypedMap<Route<Locale>, false>
 export type Routes<RouteName extends string = string, Locale extends string = string> = {
 	[K in RouteName]: TypedMap<Route<Locale>, false>
 }
-
-export interface GetRouteByPathnameParams<Locale extends string> {
-	readonly url: UrlInput
-	readonly locale: Locale
-	readonly locales: readonly Locale[]
-}

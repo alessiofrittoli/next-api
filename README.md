@@ -52,6 +52,8 @@
   - [Contributing](#contributing)
   - [Security](#security)
 - [API Reference](#api-reference)
+  - [Internationalized routes](#internationalized-routes)
+    - [`IntlRoutes`](#intlRoutes)
 - [Credits](#made-with-)
 
 ---
@@ -152,7 +154,64 @@ If you believe you have found a security vulnerability, we encourage you to **_r
 
 ### API Reference
 
--- Docs coming soon --
+#### Internationalized routes
+
+##### `IntlRoutes`
+
+`IntlRoutes` stores named route definitions for multiple locales. Use it to keep translated paths and their corresponding page rewrite paths together, then reuse the definitions wherever you need them, such as links and sitemap generation.
+
+Import `IntlRoutes` and the `Route` type from the `/intl` entry point:
+
+```typescript
+import { IntlRoutes, type Route as NextRoute } from '@alessiofrittoli/next-api/intl'
+```
+
+Define the supported locales and route names, then provide the route definitions to the constructor:
+
+```typescript
+export const defaultLocale = 'en'
+export const locales = [defaultLocale, 'it'] as const
+
+export type Locale = (typeof locales)[number]
+export type RouteName = 'home' | 'login'
+export type Route = NextRoute<Locale>
+
+export const routes = new IntlRoutes<RouteName, Locale>({
+  locales,
+  defaultLocale,
+  routes: [
+    [
+      'home',
+      IntlRoutes.FormatRoute<Route>([
+        ['it', { href: '/' }],
+        ['en', { href: '/' }],
+      ]),
+    ],
+    [
+      'login',
+      IntlRoutes.FormatRoute<Route>([
+        ['it', { href: '/autenticazione', rewrite: '/login' }],
+        ['en', { href: '/login' }],
+      ]),
+    ],
+  ],
+})
+```
+
+Each `IntlRoute` requires an `href` and may include a `rewrite`. The `href` is the public URL for that locale; `rewrite` is the internal page path used by the application. `getRouteHref()` adds the locale prefix for non-default locales and returns the formatted URL:
+
+```tsx
+<Link href={routes.getRouteHref('login', locale)}>Go to login page</Link>
+```
+
+The class provides these methods:
+
+- `get(name)` returns the localized route map for a route name.
+- `getRouteHref(name, locale)` returns that locale's public href with its locale prefix when needed.
+- `getAll()` returns the map of all named routes.
+- `set(name, route)` adds or replaces a route and returns the routes map.
+- `getRouteByPathname(url, locale)` finds a route matching a URL pathname. It checks the selected locale's rewrite or href, then the hrefs for the other locales.
+- `IntlRoutes.FormatRoute(entries)` creates the locale-to-route map used in each route definition.
 
 ---
 

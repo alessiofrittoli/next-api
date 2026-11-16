@@ -32,11 +32,7 @@ export const withIntlRoutes =
 			locales,
 		}).pathname
 
-		const route = routes.getRouteByPathname({
-			url: nextUrl.pathname,
-			locale: requestLocale,
-			locales,
-		})?.[1]
+		const route = routes.getRouteByPathname(nextUrl.pathname, requestLocale)?.[1]
 
 		if (!route) {
 			/** Check if current path is dynamic and has parent route. */
@@ -47,11 +43,7 @@ export const withIntlRoutes =
 
 				if (!check) continue
 
-				const route = routes.getRouteByPathname({
-					url: check,
-					locale: requestLocale,
-					locales,
-				})?.[1]
+				const route = routes.getRouteByPathname(check, requestLocale)?.[1]
 
 				const intlRoute = route && route.get(requestLocale)
 				const routeRewrite = intlRoute && intlRoute.rewrite

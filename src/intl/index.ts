@@ -1,9 +1,19 @@
-import type { GetRouteByPathnameParams, Route, Routes } from '@/intl/types'
 import { getTypedMap, type TypedMap } from '@alessiofrittoli/typed-map'
-import { Url } from '@alessiofrittoli/url-utils'
-import { removeUrlLocalePrefix } from './utils'
+import { addUrlLocalePrefix, removeUrlLocalePrefix } from './utils'
+import { Url, type UrlInput } from '@alessiofrittoli/url-utils'
+import type { Route, Routes } from '@/intl/types'
 
 export * from '@/intl/types'
+
+export interface IntlRoutesParams<
+	RouteName extends string,
+	Locale extends string,
+	T extends Routes<RouteName, Locale> = Routes<RouteName, Locale>,
+> {
+	readonly routes: Iterable<readonly [RouteName, T[RouteName]]>
+	readonly locales: readonly Locale[]
+	readonly defaultLocale: Locale
+}
 
 export class IntlRoutes<
 	RouteName extends string,
@@ -11,30 +21,73 @@ export class IntlRoutes<
 	T extends Routes<RouteName, Locale> = Routes<RouteName, Locale>,
 > {
 	private readonly routes: TypedMap<T, false>
+	public readonly locales: readonly Locale[]
+	public readonly defaultLocale: Locale
 
-	public constructor(routes: Iterable<readonly [RouteName, T[RouteName]]>) {
+	public constructor(params: IntlRoutesParams<RouteName, Locale, T>) {
+		const { routes, locales, defaultLocale } = params
+
 		this.routes = getTypedMap<T, false>(routes)
+		this.locales = locales
+		this.defaultLocale = defaultLocale
 	}
 
-	public get(key: RouteName): T[RouteName] {
-		return this.routes.get(key)
+	/**
+	 * Get route definition.
+	 *
+	 * @returns The route definition.
+	 */
+	public get(name: RouteName): T[RouteName] {
+		return this.routes.get(name)
 	}
 
+	/**
+	 * Get route href.
+	 *
+	 * @returns The route href.
+	 */
+	public getRouteHref(name: RouteName, locale: Locale): string {
+		const route = this.routes.get(name)
+
+		return Url.format(
+			addUrlLocalePrefix({
+				url: route.get(locale).href,
+				locale,
+				locales: this.locales,
+				defaultLocale: this.defaultLocale,
+			}),
+		)
+	}
+
+	/**
+	 * Get all routes definition.
+	 *
+	 * @returns The routes definition.
+	 */
 	public getAll(): TypedMap<T, false> {
 		return this.routes
 	}
 
-	public set<K extends RouteName>(key: K, value: T[K]): TypedMap<T, false> {
-		return this.routes.set(key, value)
+	/**
+	 * Set a route definition.
+	 *
+	 * @returns The routes definition.
+	 */
+	public set<K extends RouteName>(name: K, value: T[K]): TypedMap<T, false> {
+		return this.routes.set(name, value)
 	}
 
-	public getRouteByPathname(params: GetRouteByPathnameParams<Locale>): [keyof T, T[keyof T]] | undefined {
-		const { url, locale, locales } = params
+	/**
+	 * Get route definition by pathname.
+	 *
+	 * @param params An object defining find criteria.
+	 *
+	 * @returns The route definition if any, `undefined` otherwise.
+	 */
+	public getRouteByPathname(url: UrlInput, locale: Locale): [keyof T, T[keyof T]] | undefined {
+		const { locales } = this
 
-		const requestPathname = removeUrlLocalePrefix({
-			url,
-			locales,
-		}).pathname
+		const requestPathname = removeUrlLocalePrefix({ url, locales }).pathname
 
 		return Array.from(this.getAll().entries()).find(
 			([, route]) =>
@@ -50,6 +103,13 @@ export class IntlRoutes<
 		)
 	}
 
+	/**
+	 * Format route definition.
+	 *
+	 * @param iterable An iterable defining route definitions.
+	 *
+	 * @returns The formatted route definition.
+	 */
 	public static FormatRoute<U extends Route, K extends keyof U = keyof U>(
 		iterable: Iterable<readonly [K, U[K]]>,
 	): TypedMap<U, false, K> {
