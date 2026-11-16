@@ -54,6 +54,7 @@
 - [API Reference](#api-reference)
   - [Internationalized routes](#internationalized-routes)
     - [`IntlRoutes`](#intlroutes)
+    - [Proxy helpers](#proxy-helpers)
 - [Credits](#made-with-)
 
 ---
@@ -212,6 +213,59 @@ The class provides these methods:
 - `set(name, route)` adds or replaces a route and returns the routes map.
 - `getRouteByPathname(url, locale)` finds a route matching a URL pathname. It checks the selected locale's rewrite or href, then the hrefs for the other locales.
 - `IntlRoutes.FormatRoute(entries)` creates the locale-to-route map used in each route definition.
+
+##### Proxy helpers
+
+The `/intl/proxy` entry point exports three proxy functions for locale selection and localized route handling:
+
+```typescript
+import {
+  withImplictDefaultLocale,
+  withIntlRoutes,
+  withUserPreferredLocale,
+} from '@alessiofrittoli/next-api/intl/proxy'
+```
+
+All three accept `locales` and `defaultLocale`. `withIntlRoutes` also accepts the `IntlRoutes` instance. `withUserPreferredLocale` optionally accepts `cookieName`, which defaults to `'user-locale'`.
+
+Compose them with `Chain.functions()` in your Next.js `proxy.ts`:
+
+```typescript
+import {
+  withImplictDefaultLocale,
+  withIntlRoutes,
+  withUserPreferredLocale,
+} from '@alessiofrittoli/next-api/intl/proxy'
+import { lastProxy, type ProxyFactory } from '@alessiofrittoli/next-api/middlewares'
+import { Chain } from '@alessiofrittoli/chain-functions'
+import { defaultLocale, locales } from '@/i18n'
+import { routes } from '@/data/routes'
+
+const factory: ProxyFactory = [
+  withUserPreferredLocale({ locales, defaultLocale }),
+  withIntlRoutes({ locales, defaultLocale, routes }),
+  withImplictDefaultLocale({ locales, defaultLocale }),
+  lastProxy,
+]
+
+export default Chain.functions(factory)
+```
+
+Add a Next.js `config.matcher` alongside the proxy export to choose which requests run through this chain. This matcher excludes API routes and static assets:
+
+```typescript
+export const config = {
+  matcher: ['/((?!api/|_next|.*\\..*).*)'],
+}
+```
+
+`withUserPreferredLocale` determines a supported locale from the `locale` query parameter, the `X-Locale` header, the configured cookie, or the `Accept-Language` header, in that order. If none selects a locale, it uses `defaultLocale`. It stores the selected locale in the cookie and redirects a request when its current locale prefix differs from the selected locale.
+
+`withIntlRoutes` uses the route registry to handle translated paths. It redirects a known route to the current locale's public `href` when needed, and rewrites routes with a `rewrite` value to their internal page path. It also handles deeper paths under registered routes when the route has both `href` and `rewrite` values.
+
+`withImplictDefaultLocale` rewrites requests for the default locale to an internal path prefixed with that locale. For example, `/login` is rewritten to `/en/login` when `en` is the default locale. Configure your Next.js pages under a first-level locale segment, such as `app/[locale]/...`. Requests already prefixed with a non-default locale pass through without this rewrite.
+
+The order in the example lets the locale preference helper select the locale, lets the route helper apply translations, and then sends default-locale paths to their locale-prefixed internal route. `lastProxy` terminates the chain with `NextResponse.next()`.
 
 ---
 
