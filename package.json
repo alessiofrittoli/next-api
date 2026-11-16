@@ -91,6 +91,7 @@
 	},
 	"peerDependencies": {
 		"@alessiofrittoli/chain-functions": "^2.8.0",
+		"@alessiofrittoli/console": "^1.0.0",
 		"@alessiofrittoli/date-utils": "^4.3.0",
 		"@alessiofrittoli/exception": "^4.2.0",
 		"@alessiofrittoli/node-scripts": "^4.2.0",
@@ -100,11 +101,15 @@
 		"@alessiofrittoli/web-utils": "^3.0.0",
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
+		"accept-language": "^3.0.20",
 		"next": "^16.4.3",
 		"react": "^19.3.1",
 		"react-dom": "^19.3.1"
 	},
 	"peerDependenciesMeta": {
+		"@alessiofrittoli/console": {
+			"optional": true
+		},
 		"@alessiofrittoli/date-utils": {
 			"optional": true
 		},
@@ -122,10 +127,14 @@
 		},
 		"@alessiofrittoli/web-utils": {
 			"optional": true
+		},
+		"accept-language": {
+			"optional": true
 		}
 	},
 	"devDependencies": {
 		"@alessiofrittoli/chain-functions": "^2.8.0",
+		"@alessiofrittoli/console": "^1.0.0",
 		"@alessiofrittoli/date-utils": "^4.3.0",
 		"@alessiofrittoli/exception": "^4.3.0",
 		"@alessiofrittoli/node-scripts": "^4.2.0",
@@ -145,6 +154,7 @@
 		"@types/react": "^19.3.0",
 		"@types/react-dom": "^19.3.0",
 		"@vitest/coverage-v8": "^5.1.0",
+		"accept-language": "^3.0.20",
 		"concurrently": "^10.0.7",
 		"eslint": "10.15.0",
 		"eslint-config-next": "16.4.6",
