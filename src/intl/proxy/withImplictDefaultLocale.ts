@@ -1,14 +1,21 @@
-import { addUrlLocalePrefix, getPathnameLocale } from '../utils'
+import { addUrlLocalePrefix, getPathnameLocale } from '@/intl/utils'
+import type { ProxyCommonParams } from '@/intl/proxy/types'
 import { Console } from '@alessiofrittoli/console'
 import { Url } from '@alessiofrittoli/url-utils'
 import { NextResponse } from '@/response'
 import type { Proxy } from '@/proxy'
 
-export interface WithImplictDefaultLocaleParams<Locale extends string> {
-	readonly locales: readonly Locale[]
-	readonly defaultLocale: Locale
-}
+export type WithImplictDefaultLocaleParams<Locale extends string> = ProxyCommonParams<Locale>
 
+/**
+ * Rewrite requests from `/*` to `/{defaultLocale}/*`.
+ *
+ * ⚠️ make sure to add your routes inside a 1st level dynamic fragment (e.g. `app/[locale]/**\/page.tsx`)
+ *
+ * @param params An object defining required parameters. See {@link WithImplictDefaultLocaleParams} for more info.
+ *
+ * @returns The `Proxy` function.
+ */
 export const withImplictDefaultLocale =
 	<Locale extends string>(params: WithImplictDefaultLocaleParams<Locale>): Proxy =>
 	next =>
@@ -16,6 +23,7 @@ export const withImplictDefaultLocale =
 		const { locales, defaultLocale } = params
 
 		const { nextUrl } = request
+
 		const routeLocale = getPathnameLocale({
 			pathname: nextUrl.pathname,
 			locales,

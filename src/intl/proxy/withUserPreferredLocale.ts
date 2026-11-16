@@ -1,5 +1,6 @@
-import { addUrlLocalePrefix, getPathnameLocale } from '../utils/url'
-import { getRequestLocale } from '../utils/getRequestLocale'
+import { addUrlLocalePrefix, getPathnameLocale } from '@/intl/utils/url'
+import { getRequestLocale } from '@/intl/utils/getRequestLocale'
+import type { ProxyCommonParams } from '@/intl/proxy/types'
 import { Cookie } from '@alessiofrittoli/web-utils/cookie'
 import { Console } from '@alessiofrittoli/console'
 import { Url } from '@alessiofrittoli/url-utils'
@@ -7,9 +8,12 @@ import { HttpCookie } from '@/HttpCookie'
 import { NextResponse } from '@/response'
 import type { Proxy } from '@/proxy'
 
-export interface WithUserPreferredLocaleParams<Locale extends string> {
-	readonly locales: readonly Locale[]
-	readonly defaultLocale: Locale
+export interface WithUserPreferredLocaleParams<Locale extends string> extends ProxyCommonParams<Locale> {
+	/**
+	 * A custom cookie name where user locale preference is stored.
+	 *
+	 * @default 'user-locale'
+	 */
 	readonly cookieName?: string
 }
 

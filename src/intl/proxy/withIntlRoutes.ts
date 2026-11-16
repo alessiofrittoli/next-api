@@ -1,14 +1,17 @@
-import { addUrlLocalePrefix, getPathnameLocale, removeUrlLocalePrefix } from '../utils'
+import { addUrlLocalePrefix, getPathnameLocale, removeUrlLocalePrefix } from '@/intl/utils'
+import type { ProxyCommonParams } from '@/intl/proxy/types'
 import { Console } from '@alessiofrittoli/console'
 import { Url } from '@alessiofrittoli/url-utils'
 import { NextResponse } from '@/response'
+import type { IntlRoutes } from '@/intl'
 import type { Proxy } from '@/proxy'
-import type { IntlRoutes } from '..'
 
-export interface WithIntlRoutesParams<Locale extends string> {
+export interface WithIntlRoutesParams<Locale extends string> extends ProxyCommonParams<Locale> {
+	/**
+	 * The `IntlRoutes` instance.
+	 *
+	 */
 	readonly routes: IntlRoutes<string, Locale>
-	readonly locales: readonly Locale[]
-	readonly defaultLocale: Locale
 }
 
 export const withIntlRoutes =
