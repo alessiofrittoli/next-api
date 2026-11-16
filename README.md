@@ -52,6 +52,8 @@
   - [Contributing](#contributing)
   - [Security](#security)
 - [API Reference](#api-reference)
+  - [Server context](#server-context)
+    - [`createServerContext`](#createservercontext)
   - [Internationalized routes](#internationalized-routes)
     - [`IntlRoutes`](#intlroutes)
     - [Proxy helpers](#proxy-helpers)
@@ -154,6 +156,54 @@ If you believe you have found a security vulnerability, we encourage you to **_r
 ---
 
 ### API Reference
+
+#### Server context
+
+##### `createServerContext`
+
+`createServerContext()` creates a typed map for server context and memoizes its creation with `React.cache()`. Pass an initial `TypedMap` to use it as the context value, or omit it to start with an empty map. React scopes the cached value to the current server render, so calls made during the same render share the context while separate requests receive separate contexts.
+
+Import it from the `/server` entry point:
+
+```typescript
+import { createServerContext } from '@alessiofrittoli/next-api/server'
+import { getTypedMap, type TypedMap } from '@alessiofrittoli/typed-map'
+```
+
+For example, you can initialize a root context with separate maps for page and shared data, then expose a helper that returns either the root map or one of its entries:
+
+```typescript
+interface PageContext {
+  locale: string
+}
+
+interface CommonContext {
+  someValue: boolean
+}
+
+interface RootContextState {
+  page: TypedMap<PageContext, false>
+  commonData: TypedMap<CommonContext, false>
+}
+
+type RootContext = TypedMap<RootContextState, false>
+
+const initialContext = getTypedMap<RootContextState, false>([
+  ['page', getTypedMap<PageContext, false>()],
+  ['commonData', getTypedMap<CommonContext, false>()],
+])
+
+export function getServerContext(): RootContext
+export function getServerContext<K extends keyof RootContextState>(key: K): RootContextState[K]
+export function getServerContext<K extends keyof RootContextState>(
+  key?: K,
+): RootContext | RootContextState[K] {
+  const context = createServerContext(initialContext)
+  return key ? context.get(key) : context
+}
+```
+
+Use the returned map in server components to share values during a render. A client component can read a serialized context value if you pass it through a React context provider.
 
 #### Internationalized routes
 
