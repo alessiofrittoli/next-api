@@ -25,7 +25,7 @@ export class HttpCookie {
 	 * Internal Next.js API Request object use to read cookies.
 	 *
 	 */
-	private static _request?: Api.Route.Request<unknown>
+	private static _request?: { headers: Headers } | Api.Route.Request<unknown>
 
 	/**
 	 * Internal Response Headers used to set new cookies.
@@ -39,7 +39,7 @@ export class HttpCookie {
 	 * @param	request The Next.js API Request object.
 	 * @returns	The `HttpCookie` reference for chaining purposes.
 	 */
-	public static request<T>(request: Api.Route.Request<T>): typeof HttpCookie {
+	public static request<T>(request: { headers: Headers } | Api.Route.Request<T>): typeof HttpCookie {
 		this._request = request
 		return this
 	}
