@@ -22,6 +22,14 @@ describe('HttpCookie', () => {
 			expect(HttpCookie['_request']).toBe(request)
 		})
 
+		it('allows to set request Headers object', () => {
+			const request = { headers: new Headers() }
+
+			HttpCookie.request(request)
+
+			expect(HttpCookie['_request']).toBe(request)
+		})
+
 		it('returns `HttpCookie` reference for chaining purposes', () => {
 			expect(HttpCookie.request(request)).toBe(HttpCookie)
 		})
