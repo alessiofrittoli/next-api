@@ -31,26 +31,27 @@ describe('withRateLimit', () => {
 		await withRateLimit(request, next)
 		expect(next).toHaveBeenCalledWith(request)
 
-		await withRateLimit(request, next, Infinity)
+		await withRateLimit(request, next, { max: Infinity })
 		expect(next).toHaveBeenCalledWith(request)
 	})
 
 	it('calls `next` if the request is within the rate limit', async () => {
-		await withRateLimit(request, next, 5, 60)
-		await withRateLimit(request, next, 5, 60)
+		await withRateLimit(request, next, { max: 5, inS: 60 })
+		await withRateLimit(request, next, { max: 5, inS: 60 })
+
 		expect(next).toHaveBeenCalledWith(request)
 		expect(setTimeout).toHaveBeenCalledTimes(2)
 		expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 60 * 1000)
 	})
 
 	it('clears timeouts correctly', async () => {
-		await withRateLimit(request, next, 1, 60)
-		await withRateLimit(request, next, 1, 60) // blacklisted
+		await withRateLimit(request, next, { max: 1, inS: 60 })
+		await withRateLimit(request, next, { max: 1, inS: 60 }) // blacklisted
 		vi.advanceTimersByTime(30 * 1000)
-		await withRateLimit(request, next, 1, 60) // still blacklisted
+		await withRateLimit(request, next, { max: 1, inS: 60 }) // still blacklisted
 
 		vi.advanceTimersByTime(61 * 1000)
-		const response = await withRateLimit(request, next, 1, 60)
+		const response = await withRateLimit(request, next, { max: 1, inS: 60 })
 
 		expect(response.status).toBe(200)
 		expect(setTimeout).toHaveBeenCalledTimes(4)
@@ -59,10 +60,10 @@ describe('withRateLimit', () => {
 
 	it('returns a `429` response if the request exceeds the rate limit', async () => {
 		for (let i = 0; i < 5; i++) {
-			await withRateLimit(request, next, 5, 60)
+			await withRateLimit(request, next, { max: 5, inS: 60 })
 		}
 
-		const response = await withRateLimit(request, next, 5, 60)
+		const response = await withRateLimit(request, next, { max: 5, inS: 60 })
 
 		expect(response).toBeInstanceOf(NextResponse)
 		expect(response.status).toBe(429)
@@ -72,15 +73,15 @@ describe('withRateLimit', () => {
 
 	it('calls `onQuotaReached` if the request exceeds the rate limit', async () => {
 		for (let i = 0; i < 5; i++) {
-			await withRateLimit(request, next, 5, 60, undefined, onQuotaReached)
+			await withRateLimit(request, next, { max: 5, inS: 60, onQuotaReached })
 		}
 
-		await withRateLimit(request, next, 5, 60, undefined, onQuotaReached)
+		await withRateLimit(request, next, { max: 5, inS: 60, onQuotaReached })
 		expect(onQuotaReached).toHaveBeenCalledWith('::1', expect.any(Map))
 	})
 
 	it('enables CORS if `true` has been provided', async () => {
-		const response = await withRateLimit(request, next, 5, 60, true)
+		const response = await withRateLimit(request, next, { max: 5, inS: 60, cors: true })
 		expect(response).toBeInstanceOf(NextResponse)
 
 		const exposedHeaders = response.headers.get('Access-Control-Expose-Headers')?.split(', ')
@@ -90,11 +91,11 @@ describe('withRateLimit', () => {
 	})
 
 	it('enables CORS if CORS policy object has been provided', async () => {
-		const corsPolicy: Api.CORS.Policy = {
+		const cors: Api.CORS.Policy = {
 			exposedHeaders: ['X-Custom-Header'],
 		}
 
-		const response = await withRateLimit(request, next, 5, 60, corsPolicy)
+		const response = await withRateLimit(request, next, { max: 5, inS: 60, cors })
 		expect(response).toBeInstanceOf(NextResponse)
 
 		const exposedHeaders = response.headers.get('Access-Control-Expose-Headers')?.split(', ')
@@ -105,8 +106,8 @@ describe('withRateLimit', () => {
 	})
 
 	it("doesn't set `Retry-After` and `X-Max-Requests` if `inS` is falsey", async () => {
-		const response = await withRateLimit(request, next, 5, 0)
-		const response2 = await withRateLimit(request, next, 5)
+		const response = await withRateLimit(request, next, { max: 5, inS: 0 })
+		const response2 = await withRateLimit(request, next, { max: 5 })
 
 		expect(response).toBeInstanceOf(NextResponse)
 		expect(response2).toBeInstanceOf(NextResponse)
@@ -118,7 +119,7 @@ describe('withRateLimit', () => {
 	})
 
 	it('fallback to empty Array if `cors.exposedHeaders` is not defined', async () => {
-		const response = await withRateLimit(request, next, 5, 10, {})
+		const response = await withRateLimit(request, next, { max: 5, inS: 10, cors: {} })
 		const exposedHeaders = response.headers.get('Access-Control-Expose-Headers')?.split(', ')
 		expect(exposedHeaders).toEqual([...NextResponse.CorsExposedHeaders, 'X-Max-Requests'])
 	})

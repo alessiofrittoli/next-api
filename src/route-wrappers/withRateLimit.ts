@@ -10,34 +10,57 @@ type List = typeof list
 /**
  * A handler function that is called when the rate limit quota is reached for a given IP address.
  *
- * @param requestIp - The IP address of the request that has reached the quota.
- * @param list - A map containing the quota information for each IP address.
- * @returns A promise that resolves to void or void.
+ * @param requestIp The IP address of the request that has reached the quota.
+ * @param list A map containing the quota information for each IP address.
  */
 export type OnQuotaReachedHandler = (requestIp: string, list: List) => void | Promise<void>
 
+export interface WithRateLimitOptions {
+	/**
+	 * The maximum number of requests allowed within the specified time window.
+	 *
+	 */
+	max?: number
+	/**
+	 * The time window in seconds for rate limiting.
+	 *
+	 */
+	inS?: number
+	/**
+	 * CORS policy to apply to the response.
+	 *
+	 */
+	cors?: true | Api.CORS.Policy
+	/**
+	 * Optional callback to execute when the rate limit is reached.
+	 *
+	 * @param requestIp The IP address of the request that has reached the quota.
+	 * @param list A map containing the quota information for each IP address.
+	 */
+	onQuotaReached?: OnQuotaReachedHandler
+}
+
 /**
- * Middleware to apply rate limiting to an API route.
+ * Apply rate limiting to API requests.
  *
- * @template T - The type of the request body.
+ * @template T The type of the request body.
  *
- * @param	request - The incoming API request.
- * @param	next - The next handler to call if the request is within the rate limit.
- * @param	max - The maximum number of requests allowed within the specified time window.
- * @param	inS - The time window in seconds for rate limiting.
- * @param	cors - CORS policy to apply to the response.
- * @param	onQuotaReached - Optional callback to execute when the rate limit is reached.
+ * @param request The incoming API request.
+ * @param next The next handler to call if the request is within the rate limit.
+ * @param options (Optional) An object defining customization options. See {@link WithRateLimitOptions} for more info.
+ *
  * @returns The response to be sent back to the client.
  */
 export const withRateLimit = async <T = unknown>(
 	request: Api.Route.Request<T>,
 	next: Api.Route.Handler<T>,
-	max?: number,
-	inS?: number,
-	cors?: true | Api.CORS.Policy,
-	onQuotaReached?: OnQuotaReachedHandler,
+	options: WithRateLimitOptions = {},
 ): Promise<NextResponse | ReturnType<Api.Route.Handler<T>>> => {
-	if (!max || max === Infinity) return next(request)
+	const { max, inS, cors, onQuotaReached } = options
+
+	if (!max || max === Infinity) {
+		return next(request)
+	}
 
 	const requestIp = (await getRequestIp(request)) || '::1'
 
@@ -52,6 +75,7 @@ export const withRateLimit = async <T = unknown>(
 	}
 
 	const quota = (list.get(requestIp) || 0) + 1
+
 	list.set(requestIp, quota)
 
 	if (quota <= max) {
