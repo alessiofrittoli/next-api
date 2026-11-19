@@ -1,36 +1,52 @@
-// import { defaultLocale, type Locale, localeCookieName } from '@i18n'
-// import { HttpCookie } from '@alessiofrittoli/next-api/HttpCookie'
-// import { getLocale } from '@i18n/utils/acceptLanguage'
-// import type { Api } from '@alessiofrittoli/next-api'
-
-import { getLocale } from './acceptLanguage'
+import { getLocale } from '@/intl/utils/acceptLanguage'
 import { HttpCookie } from '@/HttpCookie'
 import type { Api } from '@/types'
 
 export interface GetRequestLocaleParams<Locale extends string> {
+	/**
+	 * A list of application locales.
+	 *
+	 */
 	readonly locales: readonly Locale[]
+	/**
+	 * The application default locale.
+	 *
+	 */
 	readonly defaultLocale: Locale
-	readonly cookieName: string
-	readonly request: Api.Route.Request
-	readonly respectUser?: boolean
+	/**
+	 * The Next.js API Request object or an object containing request `Headers`.
+	 *
+	 */
+	readonly request: { headers: Headers } | Api.Route.Request
+	/**
+	 * A cookie name where locale preferences may be saved.
+	 *
+	 */
+	readonly cookieName?: string
 }
 
 /**
  * Get Request Locale from Cookies (set by a language switcher) or `Accept-Language` Request Header.
  *
- * @param	request		The Next.js API Request object.
- * @param	respectUser	Wether to respect user `Locale` preference or not.
+ * @param params An object defining required parameters. See {@link GetRequestLocaleParams} for more info.
  *
- * @returns The request `Locale` or user preferred `Locale` if `respectUser` is set to true.
+ * @returns The request `Locale` or user preferred `Locale`.
+ *
+ * @remarks
+ * - attempt to retrieve and returns `locale` from `URLSearchParams` defined in given `NextRequest.nextUrl`.
+ * - attempt to retrieve and returns `locale` from `X-Locale` request header.
+ * - attempt to retrieve and returns `locale` from `cookieName` request Cookie.
+ * - attempt to retrieve and returns `locale` from `Accept-Language` request header.
+ * - returns the given `defaultLocale` if none of the above worked.
  */
 export const getRequestLocale = <Locale extends string>(
 	params: GetRequestLocaleParams<Locale>,
 ): Locale | undefined => {
-	const { locales, defaultLocale, request, cookieName, respectUser = true } = params
-	const { nextUrl } = request
+	const { locales, defaultLocale, request, cookieName } = params
+	const nextUrl = 'nextUrl' in request ? request.nextUrl : undefined
 	const { headers } = request
 
-	const searchParam = nextUrl.searchParams.get('locale')
+	const searchParam = nextUrl?.searchParams.get('locale')
 
 	if (searchParam) {
 		return getLocale({
@@ -50,7 +66,7 @@ export const getRequestLocale = <Locale extends string>(
 		})
 	}
 
-	const cookie = HttpCookie.request(request).get<Locale>(cookieName)?.get('value')
+	const cookie = cookieName ? HttpCookie.request(request).get<Locale>(cookieName)?.get('value') : undefined
 
 	if (cookie) {
 		return getLocale({
@@ -60,13 +76,9 @@ export const getRequestLocale = <Locale extends string>(
 		})
 	}
 
-	if (respectUser) {
-		return getLocale({
-			locales,
-			defaultLocale,
-			priorityList: headers.get('Accept-Language'),
-		})
-	}
-
-	return defaultLocale
+	return getLocale({
+		locales,
+		defaultLocale,
+		priorityList: headers.get('Accept-Language'),
+	})
 }

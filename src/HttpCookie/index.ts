@@ -36,7 +36,7 @@ export class HttpCookie {
 	/**
 	 * Set internal `request` reference so `HttpCookie` can retrieve cookies from the Request Headers.
 	 *
-	 * @param	request The Next.js API Request object.
+	 * @param	request The Next.js API Request object or an object containing request `Headers`.
 	 * @returns	The `HttpCookie` reference for chaining purposes.
 	 */
 	public static request<T>(request: { headers: Headers } | Api.Route.Request<T>): typeof HttpCookie {
